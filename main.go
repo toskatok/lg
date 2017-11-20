@@ -70,11 +70,12 @@ func main() {
 				Message:   message,
 			})
 			if err != nil {
-				log.Println(err)
+				log.Printf("MQTT Publish: %s", err)
 			}
 		case <-sigc:
 			// Disconnect the Network Connection.
 			cli.Disconnect()
+			return
 		}
 	}
 }
