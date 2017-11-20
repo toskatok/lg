@@ -27,7 +27,7 @@ import (
 func main() {
 	// Flags
 	var rate = flag.Int64("rate", 1, "Sends one packet each ? millisecond")
-	var broker = flag.String("broker", "127.0.0.1", "MQTT Broker IP address")
+	var broker = flag.String("broker", "127.0.0.1:1883", "MQTT Broker IP:Port address")
 	var topic = flag.String("topic", "application/app/node/n/rx", "Publish on ? topic")
 
 	// Read message
