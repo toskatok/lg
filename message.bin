@@ -1,12 +1,12 @@
 {
-  "applicationID": "123",
-  "applicationName": "temperature-sensor",
+  "applicationID": "1",
+  "applicationName": "isrc-platform",
   "deviceName": "isrc-sensor",
-  "devEUI": "0202020202020202",
+  "devEUI": "0000000000000001",
   "rxInfo": [
     {
-      "mac": "0303030303030303",
-      "name": "rooftop-gateway",
+      "mac": "b827ebffff633260",
+      "name": "isrc-gateway",
       "latitude": 52.3740364,
       "longitude": 4.9144401,
       "altitude": 10.5,
