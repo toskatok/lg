@@ -56,7 +56,11 @@ func main() {
 	}
 
 	// Tick Tick
-	tick := time.Tick(time.Duration(*rate) * time.Millisecond)
+	sendTick := time.Tick(time.Duration(*rate) * time.Millisecond)
+	printTick := time.Tick(1 * time.Second)
+
+	// Packet counter
+	packets := 0
 
 	// Set up channel on which to send signal notifications.
 	sigc := make(chan os.Signal, 1)
@@ -64,7 +68,7 @@ func main() {
 
 	for {
 		select {
-		case <-tick:
+		case <-sendTick:
 			err = cli.Publish(&client.PublishOptions{
 				QoS:       mqtt.QoS0,
 				TopicName: []byte(*topic),
@@ -73,6 +77,9 @@ func main() {
 			if err != nil {
 				log.Printf("MQTT Publish: %s", err)
 			}
+			packets++
+		case <-printTick:
+			fmt.Printf("Sends %d packets\n", packets)
 		case <-sigc:
 			// Disconnect the Network Connection.
 			cli.Disconnect()
