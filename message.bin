@@ -2,7 +2,7 @@
   "applicationID": "1",
   "applicationName": "isrc-platform",
   "deviceName": "isrc-sensor",
-  "devEUI": "0000000000000001",
+  "devEUI": "0000000000000010",
   "rxInfo": [
     {
       "mac": "b827ebffff633260",
