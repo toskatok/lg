@@ -82,7 +82,9 @@ func main() {
 			fmt.Printf("Sends %d packets\n", packets)
 		case <-sigc:
 			// Disconnect the Network Connection.
-			cli.Disconnect()
+			if err := cli.Disconnect(); err != nil {
+				return
+			}
 			return
 		}
 	}
