@@ -2,14 +2,30 @@
 
 
 [[projects]]
+  branch = "master"
+  name = "github.com/2tvenom/cbor"
+  packages = ["."]
+  revision = "384e799bd841fc59220d0f5911b8cbde7b380875"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/aiotrc/uplink"
+  packages = ["lora"]
+  revision = "5ffbfcaad55328016ee4cee4231a2ed5c8ba7a3b"
+
+[[projects]]
   name = "github.com/yosssi/gmq"
-  packages = ["mqtt","mqtt/client","mqtt/packet"]
+  packages = [
+    "mqtt",
+    "mqtt/client",
+    "mqtt/packet"
+  ]
   revision = "31fa037b1019e383aa033aee1e4d04e106c88ed2"
   version = "v0.0.1"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "84bf844209d128c7a6a23fb8f7f0874765185fdb89451ca8bf48ec85c2a116e3"
+  inputs-digest = "4034e804a505aa6458ba4908073ba9da139a2cd57203f919524b896e1e8afa8c"
   solver-name = "gps-cdcl"
   solver-version = 1
