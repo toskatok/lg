@@ -12,7 +12,6 @@ package main
 
 import (
 	"bytes"
-	"encoding/base64"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -38,7 +37,8 @@ func main() {
 	flag.Parse()
 
 	// DevEUI
-	devEUI := fmt.Sprintf("%010d", devID)
+	devEUI := fmt.Sprintf("%016d", *devID)
+	fmt.Println(devEUI)
 
 	// Read message
 	data, err := ioutil.ReadFile("message.json")
@@ -50,7 +50,6 @@ func main() {
 	if err := json.Unmarshal(data, &info); err != nil {
 		panic(err)
 	}
-	fmt.Println(info)
 
 	// Create an MQTT Client.
 	cli := client.New(&client.Options{
@@ -83,8 +82,8 @@ func main() {
 	for {
 		select {
 		case <-sendTick:
-			var buffTest bytes.Buffer
-			encoder := cbor.NewEncoder(&buffTest)
+			var buffer bytes.Buffer
+			encoder := cbor.NewEncoder(&buffer)
 			if ok, err := encoder.Marshal(info[rand.Intn(len(info))]); !ok {
 				log.Printf("CBor Encoding: %s", err)
 				continue
@@ -111,7 +110,7 @@ func main() {
 					Adr:       true,
 					CodeRate:  "4/6",
 				},
-				Data: []byte(base64.StdEncoding.EncodeToString(buffTest.Bytes())),
+				Data: buffer.Bytes(),
 			})
 			if err != nil {
 				log.Printf("JSON Encoding: %s", err)
