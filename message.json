@@ -1,31 +1,14 @@
-{
-  "applicationID": "1",
-  "applicationName": "isrc-platform",
-  "deviceName": "isrc-sensor",
-  "devEUI": "0000000000000020",
-  "rxInfo": [
-    {
-      "mac": "b827ebffff633260",
-      "name": "isrc-gateway",
-      "latitude": 52.3740364,
-      "longitude": 4.9144401,
-      "altitude": 10.5,
-      "time": "2016-11-25T16:24:37.295915988Z",
-      "rssi": -57,
-      "loRaSNR": 10
-    }
-  ],
-  "txInfo": {
-    "frequency": 868100000,
-    "dataRate": {
-      "modulation": "LORA",
-      "bandwidth": 250,
-      "spreadFactor": 5
-    },
-    "adr": false,
-    "codeRate": "4/6"
+[
+  {
+    "100": 1373,
+    "101": 6606
   },
-  "fCnt": 10,
-  "fPort": 5,
-  "data": "pRjx+kKaAAAY8vpBxyf/GPP6Qk1cWhj0+kIO1BcY9fpEmjzN"
-}
+  {
+    "100": 1374,
+    "101": 6606
+  },
+  {
+    "100": 1375,
+    "101": 6606
+  }
+]
