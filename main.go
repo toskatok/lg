@@ -11,6 +11,9 @@
 package main
 
 import (
+	"bytes"
+	"encoding/base64"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -20,6 +23,8 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/2tvenom/cbor"
+	"github.com/aiotrc/uplink/lora"
 	"github.com/yosssi/gmq/mqtt"
 	"github.com/yosssi/gmq/mqtt/client"
 )
@@ -29,13 +34,23 @@ func main() {
 	var rate = flag.Int64("rate", 1000, "Sends one packet each ? millisecond")
 	var broker = flag.String("broker", "127.0.0.1:1883", "MQTT Broker IP:Port address")
 	var topic = flag.String("topic", "application/app/node/n/rx", "Publish on ? topic")
+	var devID = flag.Int("deveui", 10, "Device EUI")
 	flag.Parse()
 
+	// DevEUI
+	devEUI := fmt.Sprintf("%010d", devID)
+
 	// Read message
-	message, err := ioutil.ReadFile("message.bin")
+	data, err := ioutil.ReadFile("message.json")
 	if err != nil {
 		panic(err)
 	}
+
+	var info []map[string]int
+	if err := json.Unmarshal(data, &info); err != nil {
+		panic(err)
+	}
+	fmt.Println(info)
 
 	// Create an MQTT Client.
 	cli := client.New(&client.Options{
@@ -46,12 +61,11 @@ func main() {
 	})
 
 	// Connect to the MQTT Server.
-	err = cli.Connect(&client.ConnectOptions{
+	if err := cli.Connect(&client.ConnectOptions{
 		Network:  "tcp",
 		Address:  *broker,
 		ClientID: []byte(fmt.Sprintf("isrc-lg-%d", rand.Int63())),
-	})
-	if err != nil {
+	}); err != nil {
 		panic(err)
 	}
 
@@ -69,12 +83,46 @@ func main() {
 	for {
 		select {
 		case <-sendTick:
-			err = cli.Publish(&client.PublishOptions{
+			var buffTest bytes.Buffer
+			encoder := cbor.NewEncoder(&buffTest)
+			if ok, err := encoder.Marshal(info[rand.Intn(len(info))]); !ok {
+				log.Printf("CBor Encoding: %s", err)
+				continue
+			}
+
+			message, err := json.Marshal(lora.RxMessage{
+				ApplicationID:   "1",
+				ApplicationName: "isrc-platform",
+				DeviceName:      "isrc-sensor",
+				DevEUI:          devEUI,
+				FPort:           5,
+				FCnt:            10,
+				RxInfo: []lora.RxInfo{
+					lora.RxInfo{
+						Mac:     "b827ebffff633260",
+						Name:    "isrc-gateway",
+						Time:    time.Now(),
+						RSSI:    -57,
+						LoRaSNR: 10,
+					},
+				},
+				TxInfo: lora.TxInfo{
+					Frequency: 868100000,
+					Adr:       true,
+					CodeRate:  "4/6",
+				},
+				Data: []byte(base64.StdEncoding.EncodeToString(buffTest.Bytes())),
+			})
+			if err != nil {
+				log.Printf("JSON Encoding: %s", err)
+				continue
+			}
+
+			if err := cli.Publish(&client.PublishOptions{
 				QoS:       mqtt.QoS0,
 				TopicName: []byte(*topic),
 				Message:   message,
-			})
-			if err != nil {
+			}); err != nil {
 				log.Printf("MQTT Publish: %s", err)
 			}
 			packets++
