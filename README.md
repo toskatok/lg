@@ -1,4 +1,4 @@
-# mqttlg
+# MQTT Load Generator :fire:
 [![Travis branch](https://img.shields.io/travis/aiotrc/mqttlg/master.svg?style=flat-square)](https://travis-ci.org/aiotrc/mqttlg)
 
 ## Introduction
