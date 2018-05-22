@@ -90,15 +90,15 @@ func main() {
 
 			message, err := json.Marshal(lora.RxMessage{
 				ApplicationID:   "1",
-				ApplicationName: "isrc-platform",
-				DeviceName:      "isrc-sensor",
+				ApplicationName: "fake-application",
+				DeviceName:      "fake-device",
 				DevEUI:          devEUI,
 				FPort:           5,
 				FCnt:            10,
 				RxInfo: []lora.RxInfo{
 					lora.RxInfo{
 						Mac:     "b827ebffff633260",
-						Name:    "isrc-gateway",
+						Name:    "fake-gateway",
 						Time:    time.Now(),
 						RSSI:    -57,
 						LoRaSNR: 10,
