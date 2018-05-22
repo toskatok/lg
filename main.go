@@ -32,7 +32,6 @@ func main() {
 	// Flags
 	var rate = flag.Int64("rate", 1000, "Sends one packet each ? millisecond")
 	var broker = flag.String("broker", "127.0.0.1:1883", "MQTT Broker IP:Port address")
-	var topic = flag.String("topic", "application/app/node/n/rx", "Publish on ? topic")
 	var devID = flag.Int("deveui", 10, "Device EUI")
 	flag.Parse()
 
@@ -119,7 +118,7 @@ func main() {
 
 			if err := cli.Publish(&client.PublishOptions{
 				QoS:       mqtt.QoS0,
-				TopicName: []byte(*topic),
+				TopicName: []byte("application/app/node/n/rx"),
 				Message:   message,
 			}); err != nil {
 				log.Printf("MQTT Publish: %s", err)
