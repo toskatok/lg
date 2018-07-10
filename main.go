@@ -20,6 +20,7 @@ import (
 	"math/rand"
 	"os"
 	"os/signal"
+	"strconv"
 	"time"
 
 	"github.com/2tvenom/cbor"
@@ -28,15 +29,29 @@ import (
 	"github.com/yosssi/gmq/mqtt/client"
 )
 
+type devEUI int64
+
+func (d *devEUI) Set(v string) (err error) {
+	i, err := strconv.ParseInt(v, 16, 64)
+	*d = devEUI(i)
+
+	return
+}
+
+func (d *devEUI) String() string {
+	return "10"
+}
+
 func main() {
 	// Flags
 	var rate = flag.Int64("rate", 1000, "Sends one packet each ? millisecond")
 	var broker = flag.String("broker", "127.0.0.1:1883", "MQTT Broker IP:Port address")
-	var devID = flag.Int("deveui", 10, "Device EUI")
+	var devID devEUI
+	flag.Var(&devID, "deveui", "Device EUI")
 	flag.Parse()
 
 	// DevEUI
-	devEUI := fmt.Sprintf("%016d", *devID)
+	devEUI := fmt.Sprintf("%016X", int64(devID))
 	fmt.Println(devEUI)
 
 	// Read message
