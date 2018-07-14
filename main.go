@@ -133,7 +133,7 @@ func main() {
 
 			if err := cli.Publish(&client.PublishOptions{
 				QoS:       mqtt.QoS0,
-				TopicName: []byte(fmt.Sprintf("application/1/node/%s/rx", devEUI)),
+				TopicName: []byte(fmt.Sprintf("application/1/device/%s/rx", devEUI)),
 				Message:   message,
 			}); err != nil {
 				log.Printf("MQTT Publish: %s", err)
