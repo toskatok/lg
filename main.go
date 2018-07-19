@@ -77,7 +77,7 @@ func main() {
 	if err := cli.Connect(&client.ConnectOptions{
 		Network:  "tcp",
 		Address:  *broker,
-		ClientID: []byte(fmt.Sprintf("isrc-lg-%d", rand.Int63())),
+		ClientID: []byte(fmt.Sprintf("isrc-lg-%s", devEUI)),
 	}); err != nil {
 		panic(err)
 	}
