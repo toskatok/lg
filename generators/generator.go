@@ -23,16 +23,11 @@ type Generator interface {
 
 // Run given generator on given duration
 func Run(g Generator, d time.Duration) {
-	sendTick := time.Tick(time.Duration(*rate) * time.Millisecond)
-	printTick := time.Tick(1 * time.Second)
-
-	// Packet counter
-	packets := 0
+	sendTick := time.Tick(d)
 
 	for {
 		select {
 		case <-sendTick:
-		case <-printTick:
 		}
 	}
 }
