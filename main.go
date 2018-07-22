@@ -23,11 +23,27 @@ import (
 	"os/signal"
 	"path"
 	"path/filepath"
+	"strconv"
 
 	"github.com/aiotrc/mqttlg/generators"
 	"github.com/urfave/cli"
 	"github.com/yosssi/gmq/mqtt/client"
 )
+
+type devEUI struct {
+	v int64
+}
+
+func (d *devEUI) Set(v string) (err error) {
+	i, err := strconv.ParseInt(v, 16, 64)
+	d.v = i
+
+	return
+}
+
+func (d *devEUI) String() string {
+	return fmt.Sprintf("%016X", d.v)
+}
 
 func main() {
 	// dirname
@@ -61,15 +77,15 @@ func main() {
 				Value: path.Join(dir, "message.json"),
 				Usage: "raw information file path",
 			},
-			&cli.Int64Flag{
+			&cli.GenericFlag{
 				Name:  "deveui",
-				Value: 73,
+				Value: &devEUI{0x73},
 				Usage: "DevEUI",
 			},
 		},
 		Action: func(c *cli.Context) error {
 			// DevEUI
-			devEUI := fmt.Sprintf("%016X", c.Int64("deveui"))
+			devEUI := fmt.Sprintf("%016X", c.Generic("deveui").(*devEUI).v)
 			fmt.Println(">>> Device")
 			fmt.Println(devEUI)
 			fmt.Println(">>>")
