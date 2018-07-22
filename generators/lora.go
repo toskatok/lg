@@ -34,6 +34,11 @@ type LoRaApplicationGenerator struct {
 	GatewayMac      string
 }
 
+// Topic returns lora mqtt topic
+func (g LoRaApplicationGenerator) Topic() []byte {
+	return []byte(fmt.Sprintf("application/%s/device/%s/rx", g.ApplicationID, g.DevEUI))
+}
+
 // Generate generates lora message by converting input into cbor and generator
 // parameters.
 func (g LoRaApplicationGenerator) Generate(input interface{}) ([]byte, error) {
