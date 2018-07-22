@@ -14,152 +14,121 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"log"
+	"math/rand"
 	"os"
+	"os/signal"
+	"path"
+	"path/filepath"
 
-	"github.com/abiosoft/ishell"
-	"github.com/aiotrc/pm/client"
-	"github.com/fatih/color"
+	"github.com/aiotrc/mqttlg/generators"
+	"github.com/urfave/cli"
+	"github.com/yosssi/gmq/mqtt/client"
 )
 
-type config struct {
-	PM struct {
-		URL string
-	}
-
-	Broker struct {
-	}
-}
-
 func main() {
-	pmClient := client.New("http://127.0.0.1:8080")
-
-	// create new shell.
-	// by default, new shell includes 'exit', 'help' and 'clear' commands.
-	shell := ishell.New()
-
-	// display welcome info.
-	shell.Println("MQTT Load Generator (parham.alvani@gmail.com)")
-
-	shell.SetPrompt(fmt.Sprintf("%v %v ", color.RedString("mqttlg"), color.GreenString(">>>")))
-
-	shell.AddCmd(&ishell.Cmd{
-		Name: "about",
-		Help: "about",
-		Func: func(c *ishell.Context) {
-			c.Println("18.20 is leaving us")
-		},
-	})
-
-	projectCmd := &ishell.Cmd{
-		Name: "projects",
+	// dirname
+	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
+	if err != nil {
+		log.Fatal(err)
 	}
-	shell.AddCmd(projectCmd)
 
-	projectCmd.AddCmd(&ishell.Cmd{
-		Name: "show",
-		Help: "show [project_id]",
-		Func: func(c *ishell.Context) {
-			if len(c.Args) != 1 {
-				c.Err(fmt.Errorf("show [project_id]"))
-				return
-			}
-			name := c.Args[0]
-
-			c.ProgressBar().Indeterminate(true)
-			c.ProgressBar().Start()
-			project, err := pmClient.ProjectsShow(name)
-			c.ProgressBar().Stop()
-
-			if err != nil {
-				c.Err(err)
-				return
-			}
-			c.Printf("%+v\n", project)
+	app := &cli.App{
+		Name:        "MQTT-LG",
+		Description: "MQTT-LoRaServer.io Load Generator",
+		Authors: []cli.Author{
+			cli.Author{
+				Name:  "Parham Alvani",
+				Email: "parham.alvani@gmail.com",
+			},
 		},
-	})
-
-	projectCmd.AddCmd(&ishell.Cmd{
-		Name: "create",
-		Help: "create [project_id]",
-		Func: func(c *ishell.Context) {
-			if len(c.Args) != 1 {
-				c.Err(fmt.Errorf("create [project_id]"))
-				return
-			}
-			name := c.Args[0]
-
-			c.ProgressBar().Indeterminate(true)
-			c.ProgressBar().Start()
-			project, err := pmClient.ProjectsCreate(name)
-			c.ProgressBar().Stop()
-
-			if err != nil {
-				c.Err(err)
-				return
-			}
-			c.Printf("%+v\n", project)
+		Flags: []cli.Flag{
+			&cli.StringFlag{
+				Name:  "broker",
+				Value: "127.0.0.1:1883",
+				Usage: "MQTT `Broker` IP:Port address",
+			},
+			&cli.DurationFlag{
+				Name:  "rate",
+				Value: 1000,
+				Usage: "Sends one packet each `?` us",
+			},
+			&cli.StringFlag{
+				Name:  "message",
+				Value: path.Join(dir, "message.json"),
+				Usage: "raw information file path",
+			},
+			&cli.Int64Flag{
+				Name:  "deveui",
+				Value: 73,
+				Usage: "DevEUI",
+			},
 		},
-	})
+		Action: func(c *cli.Context) error {
+			// DevEUI
+			devEUI := fmt.Sprintf("%016X", c.Int64("deveui"))
+			fmt.Println(">>> Device")
+			fmt.Println(devEUI)
+			fmt.Println(">>>")
 
-	projectCmd.AddCmd(&ishell.Cmd{
-		Name: "delete",
-		Help: "delete [project_id]",
-		Func: func(c *ishell.Context) {
-			if len(c.Args) != 1 {
-				c.Err(fmt.Errorf("delete [project_id]"))
-				return
-			}
-			name := c.Args[0]
-
-			c.ProgressBar().Indeterminate(true)
-			c.ProgressBar().Start()
-			project, err := pmClient.ProjectsDelete(name)
-			c.ProgressBar().Stop()
-
+			// Read message
+			file, err := ioutil.ReadFile(c.String("message"))
 			if err != nil {
-				c.Err(err)
-				return
+				return err
 			}
-			c.Printf("%+v\n", project)
+
+			var data []map[string]int
+			if err := json.Unmarshal(file, &data); err != nil {
+				return err
+			}
+			fmt.Println(">>> Data")
+			for _, d := range data {
+				fmt.Printf("%v\n", d)
+			}
+			fmt.Println(">>>")
+
+			// Create an MQTT Client.
+			cli := client.New(&client.Options{
+				// Define the processing of the error handler.
+				ErrorHandler: func(err error) {
+					log.Println(err)
+				},
+			})
+
+			// Connect to the MQTT Server.
+			if err := cli.Connect(&client.ConnectOptions{
+				Network:  "tcp",
+				Address:  c.String("broker"),
+				ClientID: []byte(fmt.Sprintf("isrc-lg-%s", devEUI)),
+			}); err != nil {
+				return err
+			}
+
+			// Set up channel on which to send signal notifications.
+			sigc := make(chan os.Signal, 1)
+			signal.Notify(sigc, os.Interrupt, os.Kill)
+
+			generators.NewRunner(
+				generators.LoRaApplicationGenerator{
+					DevEUI:          devEUI,
+					ApplicationName: "fake-application",
+					ApplicationID:   "13731372",
+					GatewayMac:      "b827ebffff633260",
+					DeviceName:      "fake-device",
+				},
+				c.Duration("rate"),
+				func() interface{} {
+					return data[rand.Intn(len(data))]
+				},
+			)
+
+			return nil
 		},
-	})
-
-	projectCmd.AddCmd(&ishell.Cmd{
-		Name: "list",
-		Help: "list",
-		Func: func(c *ishell.Context) {
-			c.ProgressBar().Indeterminate(true)
-			c.ProgressBar().Start()
-			projects, err := pmClient.ProjectsList()
-			c.ProgressBar().Stop()
-
-			if err != nil {
-				c.Err(err)
-				return
-			}
-
-			for _, project := range projects {
-				c.Printf("%+v\n", project)
-			}
-		},
-	})
-
-	generatorCmd := &ishell.Cmd{
-		Name: "generator",
 	}
-	shell.AddCmd(generatorCmd)
-
-	generatorCmd.AddCmd(&ishell.Cmd{
-		Name: "create",
-		Help: "create lora []",
-	})
-
-	// run shell
-	if len(os.Args) > 1 && os.Args[1] == "--" {
-		shell.Process(os.Args[2:]...)
-	} else {
-		// start shell
-		shell.Run()
+	if err := app.Run(os.Args); err != nil {
+		log.Fatal(err)
 	}
 }
