@@ -139,6 +139,7 @@ func main() {
 				func() interface{} {
 					return data[rand.Intn(len(data))]
 				},
+				cli,
 			)
 
 			return nil

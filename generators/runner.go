@@ -32,17 +32,20 @@ type Runner struct {
 	p int64
 	s Source
 
-	cli client.Client
-	lck sync.RWMutex
+	cli *client.Client
+	lck *sync.RWMutex
 }
 
 // NewRunner creates new runner
-func NewRunner(g Generator, d time.Duration, s Source) Runner {
+func NewRunner(g Generator, d time.Duration, s Source, cli *client.Client) Runner {
 	return Runner{
 		g: g,
 		d: d,
 		p: 0,
 		s: s,
+
+		cli: cli,
+		lck: new(sync.RWMutex),
 	}
 }
 
