@@ -24,6 +24,7 @@ import (
 	"path"
 	"path/filepath"
 	"strconv"
+	"time"
 
 	"github.com/aiotrc/mqttlg/generators"
 	"github.com/urfave/cli"
@@ -123,11 +124,7 @@ func main() {
 				return err
 			}
 
-			// Set up channel on which to send signal notifications.
-			sigc := make(chan os.Signal, 1)
-			signal.Notify(sigc, os.Interrupt, os.Kill)
-
-			generators.NewRunner(
+			r := generators.NewRunner(
 				generators.LoRaApplicationGenerator{
 					DevEUI:          devEUI,
 					ApplicationName: "fake-application",
@@ -141,6 +138,14 @@ func main() {
 				},
 				cli,
 			)
+			r.Run()
+
+			go func() {
+				for {
+					time.Sleep(1 * time.Second)
+					fmt.Printf("%s -> %d\n", devEUI, r.Count())
+				}
+			}()
 
 			return nil
 		},
@@ -148,4 +153,10 @@ func main() {
 	if err := app.Run(os.Args); err != nil {
 		log.Fatal(err)
 	}
+
+	// Set up channel on which to send signal notifications.
+	sigc := make(chan os.Signal, 1)
+	signal.Notify(sigc, os.Interrupt, os.Kill)
+
+	<-sigc
 }
