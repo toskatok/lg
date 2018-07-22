@@ -33,7 +33,7 @@ type Runner struct {
 	s Source
 
 	cli *client.Client
-	lck *sync.RWMutex
+	lck sync.RWMutex
 }
 
 // NewRunner creates new runner
@@ -45,19 +45,18 @@ func NewRunner(g Generator, d time.Duration, s Source, cli *client.Client) Runne
 		s: s,
 
 		cli: cli,
-		lck: new(sync.RWMutex),
 	}
 }
 
 // Count returns number of generated messages
-func (r Runner) Count() int64 {
+func (r *Runner) Count() int64 {
 	r.lck.RLock()
 	defer r.lck.RUnlock()
 	return r.p
 }
 
 // Run runs the runner :joy:
-func (r Runner) Run() {
+func (r *Runner) Run() {
 	sendTick := time.Tick(r.d)
 
 	go func() {
