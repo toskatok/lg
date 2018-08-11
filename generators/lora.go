@@ -20,7 +20,7 @@ import (
 	"time"
 
 	"github.com/2tvenom/cbor"
-	"github.com/aiotrc/uplink/lora"
+	"github.com/I1820/link/lora"
 )
 
 // LoRaApplicationGenerator generates data based on
