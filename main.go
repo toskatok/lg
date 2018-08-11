@@ -26,7 +26,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/aiotrc/mqttlg/generators"
+	"github.com/I1820/lg/generators"
 	"github.com/urfave/cli"
 	"github.com/yosssi/gmq/mqtt/client"
 )
@@ -119,7 +119,7 @@ func main() {
 			if err := cli.Connect(&client.ConnectOptions{
 				Network:  "tcp",
 				Address:  c.String("broker"),
-				ClientID: []byte(fmt.Sprintf("isrc-lg-%s", devEUI)),
+				ClientID: []byte(fmt.Sprintf("I1820-lg-%s", devEUI)),
 			}); err != nil {
 				return err
 			}
