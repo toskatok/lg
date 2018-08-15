@@ -70,7 +70,7 @@ func main() {
 			},
 			&cli.DurationFlag{
 				Name:  "rate",
-				Value: 1000,
+				Value: 1 * time.Millisecond,
 				Usage: "Sends one packet each `?` ns",
 			},
 			&cli.StringFlag{
