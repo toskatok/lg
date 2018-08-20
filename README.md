@@ -5,8 +5,6 @@
 
 
 ## Introduction
-Simple command-line MQTT load generator for creating a heavy load on system that works based on loraserver.io.
-
-```
-json -> cbor -> loraserver mqtt uplink data -> application/app/node/n/rx
-```
+This application gives a way for creating a load with MQTT.
+MQTT is a messaging protocol and various platforms work with it so
+creating a load with MQTT creates a way for testing platforms.
