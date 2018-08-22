@@ -7,7 +7,7 @@
  * |
  * | Creation Date: 21-07-2018
  * |
- * | File Name:     lora.go
+ * | File Name:     isrc.go
  * +===============================================
  */
 
@@ -23,10 +23,11 @@ import (
 	"github.com/I1820/link/lora"
 )
 
-// LoRaApplicationGenerator generates data based on
-// [lora structure](https://github.com/aiotrc/uplink/blob/master/lora/messages.go)
-// and [cbor](http://cbor.io/)
-type LoRaApplicationGenerator struct {
+// ISRCGenerator generates data based on
+// [lora structure](https://github.com/aiotrc/uplink/blob/master/lora/messages.go) protocol
+// and [cbor](http://cbor.io/) model.
+// for historical reasons for refer to it as ISRC protocol
+type ISRCGenerator struct {
 	ApplicationID   string
 	ApplicationName string
 	DeviceName      string
@@ -35,13 +36,13 @@ type LoRaApplicationGenerator struct {
 }
 
 // Topic returns lora mqtt topic
-func (g LoRaApplicationGenerator) Topic() []byte {
+func (g ISRCGenerator) Topic() []byte {
 	return []byte(fmt.Sprintf("application/%s/device/%s/rx", g.ApplicationID, g.DevEUI))
 }
 
 // Generate generates lora message by converting input into cbor and generator
 // parameters.
-func (g LoRaApplicationGenerator) Generate(input interface{}) ([]byte, error) {
+func (g ISRCGenerator) Generate(input interface{}) ([]byte, error) {
 	// input into cbor
 	var buffer bytes.Buffer
 	encoder := cbor.NewEncoder(&buffer)
