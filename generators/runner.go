@@ -46,17 +46,8 @@ type Runner struct {
 
 // NewRunner creates new runner
 func NewRunner(g Generator, d time.Duration, s Source, broker string) (Runner, error) {
-	var r = Runner{
-		generator: g,
-		duration:  d,
-		counter:   0,
-		source:    s,
-
-		stop: make(chan struct{}),
-	}
-
 	// Create an MQTT Client.
-	r.cli = client.New(&client.Options{
+	cli := client.New(&client.Options{
 		// Define the processing of the error handler.
 		ErrorHandler: func(err error) {
 			log.Println(err)
@@ -64,15 +55,23 @@ func NewRunner(g Generator, d time.Duration, s Source, broker string) (Runner, e
 	})
 
 	// Connect to the MQTT Server.
-	if err := r.cli.Connect(&client.ConnectOptions{
+	if err := cli.Connect(&client.ConnectOptions{
 		Network:  "tcp",
 		Address:  broker,
 		ClientID: []byte(fmt.Sprintf("I1820-lg-%d", rand.Intn(1024))),
 	}); err != nil {
-		return r, err
+		return Runner{}, err
 	}
 
-	return r, nil
+	return Runner{
+		generator: g,
+		duration:  d,
+		counter:   0,
+		source:    s,
+		cli:       cli,
+
+		stop: make(chan struct{}),
+	}, nil
 }
 
 // Count returns number of generated messages
