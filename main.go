@@ -52,6 +52,7 @@ type generator struct {
 func (g *generator) Set(v string) error {
 	switch v {
 	case "aolab":
+		fallthrough
 	case "isrc":
 		g.v = v
 		return nil
@@ -119,7 +120,7 @@ func main() {
 				return err
 			}
 
-			var data []map[string]int
+			var data []map[string]interface{}
 			if err := json.Unmarshal(file, &data); err != nil {
 				return err
 			}
