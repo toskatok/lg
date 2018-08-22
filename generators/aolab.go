@@ -18,6 +18,7 @@ import (
 	"fmt"
 
 	"github.com/I1820/lanserver/models"
+	"github.com/I1820/link/aolab"
 )
 
 // AolabGenerator generates data based on
@@ -36,7 +37,14 @@ func (g AolabGenerator) Topic() []byte {
 // parameters.
 func (g AolabGenerator) Generate(input interface{}) ([]byte, error) {
 	// input into json
-	b, err := json.Marshal(input)
+	states, ok := input.(map[string]interface{})
+	if !ok {
+		return nil, fmt.Errorf("Input must be a map between strings and values")
+	}
+	b, err := json.Marshal(aolab.Log{
+		Device: g.DevEUI,
+		States: states,
+	})
 	if err != nil {
 		return nil, err
 	}
