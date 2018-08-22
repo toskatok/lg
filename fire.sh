@@ -21,8 +21,8 @@ main() {
         rate=$1
         broker=$2
 
-        for i in `seq 1 100`; do
-                dev=$(($i + 10))
+        for i in $(seq 1 100); do
+                dev=$((i + 10))
                 ./mqttlg --rate $rate --deveui $dev --broker $broker &
                 if [ $? ]; then
                         echo "mqttlg $i: $!"
