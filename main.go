@@ -28,7 +28,6 @@ import (
 
 	"github.com/I1820/lg/generators"
 	"github.com/urfave/cli"
-	"github.com/yosssi/gmq/mqtt/client"
 )
 
 type devEUI struct {
@@ -44,6 +43,24 @@ func (d *devEUI) Set(v string) (err error) {
 
 func (d *devEUI) String() string {
 	return fmt.Sprintf("%016X", d.v)
+}
+
+type generator struct {
+	v string
+}
+
+func (g *generator) Set(v string) error {
+	switch v {
+	case "aolab":
+	case "isrc":
+		g.v = v
+		return nil
+	}
+	return fmt.Errorf("Generator %s is not support", v)
+}
+
+func (g *generator) String() string {
+	return g.v
 }
 
 func main() {
@@ -83,6 +100,11 @@ func main() {
 				Value: &devEUI{0x73},
 				Usage: "DevEUI",
 			},
+			&cli.GenericFlag{
+				Name:  "generator",
+				Value: &generator{"isrc"},
+				Usage: "Generator [isrc, aolab]",
+			},
 		},
 		Action: func(c *cli.Context) error {
 			// DevEUI
@@ -107,37 +129,33 @@ func main() {
 			}
 			fmt.Println(">>>")
 
-			// Create an MQTT Client.
-			cli := client.New(&client.Options{
-				// Define the processing of the error handler.
-				ErrorHandler: func(err error) {
-					log.Println(err)
-				},
-			})
-
-			// Connect to the MQTT Server.
-			if err := cli.Connect(&client.ConnectOptions{
-				Network:  "tcp",
-				Address:  c.String("broker"),
-				ClientID: []byte(fmt.Sprintf("I1820-lg-%s", devEUI)),
-			}); err != nil {
-				return err
-			}
-
-			r := generators.NewRunner(
-				generators.LoRaApplicationGenerator{
+			var g generators.Generator
+			switch c.Generic("generator").(*generator).v {
+			case "isrc":
+				g = generators.ISRCGenerator{
 					DevEUI:          devEUI,
 					ApplicationName: "fake-application",
 					ApplicationID:   "13731372",
 					GatewayMac:      "b827ebffff633260",
 					DeviceName:      "fake-device",
-				},
+				}
+			case "aolab":
+				g = generators.AolabGenerator{
+					DevEUI: devEUI,
+				}
+			}
+
+			r, err := generators.NewRunner(
+				g,
 				c.Duration("rate"),
 				func() interface{} {
 					return data[rand.Intn(len(data))]
 				},
-				cli,
+				c.String("broker"),
 			)
+			if err != nil {
+				return err
+			}
 			r.Run()
 
 			go func() {
@@ -152,6 +170,8 @@ func main() {
 			signal.Notify(sigc, os.Interrupt, os.Kill)
 
 			<-sigc
+			r.Stop()
+			fmt.Printf("Total packets send to %s: %d\n", devEUI, r.Count())
 
 			return nil
 		},
