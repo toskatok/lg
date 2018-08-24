@@ -26,6 +26,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/I1820/lg/core"
 	"github.com/I1820/lg/generators"
 	"github.com/urfave/cli"
 )
@@ -146,7 +147,7 @@ func main() {
 				}
 			}
 
-			r, err := generators.NewRunner(
+			r, err := core.NewRunner(
 				g,
 				c.Duration("rate"),
 				func() interface{} {
