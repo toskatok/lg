@@ -23,6 +23,6 @@ lg --broker 127.0.0.1:1883 --deveui 0000000000000073 --rate 1ms
 ```
 
 ## Set I1820 on fire
-With this load generator we try to put load on I1820 and we get following results:
+With this load generator, we try to put a load on I1820 and we get the following results:
 
 ![result](results/chart.png)
