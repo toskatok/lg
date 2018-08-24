@@ -18,7 +18,7 @@ import (
 	"fmt"
 
 	"github.com/I1820/lanserver/models"
-	"github.com/I1820/link/aolab"
+	"github.com/I1820/link/models/aolab"
 )
 
 // AolabGenerator generates data based on

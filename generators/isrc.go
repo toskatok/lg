@@ -20,7 +20,7 @@ import (
 	"time"
 
 	"github.com/2tvenom/cbor"
-	"github.com/I1820/link/lora"
+	"github.com/I1820/link/protocols/lora"
 )
 
 // ISRCGenerator generates data based on
