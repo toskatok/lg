@@ -28,6 +28,7 @@ import (
 
 	"github.com/I1820/lg/core"
 	"github.com/I1820/lg/generators"
+	"github.com/I1820/lg/receivers"
 	"github.com/urfave/cli"
 )
 
@@ -107,6 +108,11 @@ func main() {
 				Value: &generator{"isrc"},
 				Usage: "Generator [isrc, aolab]",
 			},
+			&cli.StringFlag{
+				Name:  "i1820",
+				Value: "",
+				Usage: "i1820 project [use it only with I1820 platform]",
+			},
 		},
 		Action: func(c *cli.Context) error {
 			// DevEUI
@@ -115,12 +121,13 @@ func main() {
 			fmt.Println(devEUI)
 			fmt.Println(">>>")
 
-			// Read message
+			// Read message.json
 			file, err := ioutil.ReadFile(c.String("message"))
 			if err != nil {
 				return err
 			}
 
+			// Data
 			var data []map[string]interface{}
 			if err := json.Unmarshal(file, &data); err != nil {
 				return err
@@ -131,6 +138,7 @@ func main() {
 			}
 			fmt.Println(">>>")
 
+			// Generator selection
 			var g generators.Generator
 			switch c.Generic("generator").(*generator).v {
 			case "isrc":
@@ -147,6 +155,19 @@ func main() {
 				}
 			}
 
+			// I1820 mode
+			var rs []receivers.Receiver
+			var counter int
+			if project := c.String("i1820"); project != "" {
+				rs = append(rs, receivers.Receiver{
+					Topic: []byte(fmt.Sprintf("i1820/project/%s/data", project)),
+					Handler: func(topicName, message []byte) {
+						counter++
+					},
+				})
+			}
+
+			// Runner
 			r, err := core.NewRunner(
 				g,
 				c.Duration("rate"),
@@ -154,12 +175,14 @@ func main() {
 					return data[rand.Intn(len(data))]
 				},
 				c.String("broker"),
+				rs...,
 			)
 			if err != nil {
 				return err
 			}
 			r.Run()
 
+			// Report
 			go func() {
 				for {
 					time.Sleep(1 * time.Second)
@@ -174,6 +197,7 @@ func main() {
 			<-sigc
 			r.Stop()
 			fmt.Printf("Total packets send to %s: %d\n", devEUI, r.Count())
+			fmt.Printf("Total packets receive from I1820: %d\n", counter)
 
 			return nil
 		},
