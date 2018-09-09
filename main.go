@@ -24,11 +24,13 @@ import (
 	"path"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/I1820/lg/core"
 	"github.com/I1820/lg/generators"
 	"github.com/I1820/lg/receivers"
+	"github.com/alecthomas/template"
 	"github.com/urfave/cli"
 )
 
@@ -64,6 +66,11 @@ func (g *generator) Set(v string) error {
 
 func (g *generator) String() string {
 	return g.v
+}
+
+// message is used to populate templates in the given message file.
+var message struct {
+	Count int64
 }
 
 func main() {
@@ -127,14 +134,29 @@ func main() {
 				return err
 			}
 
-			// Data
+			// Create parent template
+			tmpl := template.New("lg").Funcs(template.FuncMap{
+				"now":   time.Now,
+				"randn": rand.Intn,
+			})
+
+			// Read data from the given message file, and then prase template strings.
 			var data []map[string]interface{}
 			if err := json.Unmarshal(file, &data); err != nil {
 				return err
 			}
 			fmt.Println(">>> Data")
-			for _, d := range data {
+			for i, d := range data {
 				fmt.Printf("%v\n", d)
+				for k, v := range d {
+					if s, ok := v.(string); ok {
+						p, err := tmpl.New(fmt.Sprintf("lg-%d-%s", i, k)).Parse(s)
+						if err != nil {
+							return err
+						}
+						d[k] = p
+					}
+				}
 			}
 			fmt.Println(">>>")
 
@@ -172,7 +194,22 @@ func main() {
 				g,
 				c.Duration("rate"),
 				func() interface{} {
-					return data[rand.Intn(len(data))]
+					message.Count++
+					d := make(map[string]interface{})
+					for k, v := range data[rand.Intn(len(data))] {
+						if tmpl, ok := v.(*template.Template); ok {
+							var b strings.Builder
+							if err := tmpl.Execute(&b, message); err != nil {
+								continue
+							}
+							d[k] = b.String()
+						} else {
+							d[k] = v
+						}
+					}
+					fmt.Println(d)
+
+					return d
 				},
 				c.String("broker"),
 				rs...,
