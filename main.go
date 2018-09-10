@@ -204,8 +204,6 @@ func main() {
 							d[k] = v
 						}
 					}
-					fmt.Println(d)
-
 					return d
 				},
 				c.String("broker"),
