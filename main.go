@@ -79,7 +79,7 @@ func main() {
 
 	app := &cli.App{
 		Name:        "MQTT-LG",
-		Description: "MQTT-LoRaServer.io Load Generator",
+		Description: "MQTT based Load Generator",
 		Authors: []cli.Author{
 			cli.Author{
 				Name:  "Parham Alvani",
