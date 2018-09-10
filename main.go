@@ -34,38 +34,35 @@ import (
 	"github.com/urfave/cli"
 )
 
-type devEUI struct {
-	v int64
-}
+type devEUI int64
 
 func (d *devEUI) Set(v string) (err error) {
 	i, err := strconv.ParseInt(v, 16, 64)
-	d.v = i
+	*d = devEUI(i)
 
 	return
 }
 
-func (d *devEUI) String() string {
-	return fmt.Sprintf("%016X", d.v)
+func (d devEUI) String() string {
+	return fmt.Sprintf("%016X", int64(d))
 }
 
-type generator struct {
-	v string
-}
+type generator int
 
 func (g *generator) Set(v string) error {
 	switch v {
 	case "aolab":
-		fallthrough
+		*g = 0
 	case "isrc":
-		g.v = v
-		return nil
+		*g = 1
+	default:
+		return fmt.Errorf("the %s generator hasn't been implemented yet", v)
 	}
-	return fmt.Errorf("Generator %s is not support", v)
+	return nil
 }
 
 func (g *generator) String() string {
-	return g.v
+	return string(*g)
 }
 
 // message is used to populate templates in the given message file.
@@ -107,12 +104,12 @@ func main() {
 			},
 			&cli.GenericFlag{
 				Name:  "deveui",
-				Value: &devEUI{0x73},
+				Value: new(devEUI),
 				Usage: "DevEUI",
 			},
 			&cli.GenericFlag{
 				Name:  "generator",
-				Value: &generator{"isrc"},
+				Value: new(generator),
 				Usage: "Generator [isrc, aolab]",
 			},
 			&cli.StringFlag{
@@ -123,7 +120,7 @@ func main() {
 		},
 		Action: func(c *cli.Context) error {
 			// DevEUI
-			devEUI := fmt.Sprintf("%016X", c.Generic("deveui").(*devEUI).v)
+			devEUI := c.Generic("deveui").(*devEUI).String()
 			fmt.Println(">>> Device")
 			fmt.Println(devEUI)
 			fmt.Println(">>>")
@@ -162,8 +159,8 @@ func main() {
 
 			// Generator selection
 			var g generators.Generator
-			switch c.Generic("generator").(*generator).v {
-			case "isrc":
+			switch *c.Generic("generator").(*generator) {
+			case 0: // ISRC
 				g = generators.ISRCGenerator{
 					DevEUI:          devEUI,
 					ApplicationName: "fake-application",
@@ -171,7 +168,7 @@ func main() {
 					GatewayMac:      "b827ebffff633260",
 					DeviceName:      "fake-device",
 				}
-			case "aolab":
+			case 1: // Aolab
 				g = generators.AolabGenerator{
 					DevEUI: devEUI,
 				}
