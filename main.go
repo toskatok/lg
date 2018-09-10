@@ -95,17 +95,17 @@ func main() {
 			&cli.DurationFlag{
 				Name:  "rate",
 				Value: 1 * time.Millisecond,
-				Usage: "Sends one packet each `?` ns",
+				Usage: "Send interval",
 			},
 			&cli.StringFlag{
 				Name:  "message",
 				Value: path.Join(dir, "message.json"),
-				Usage: "raw information file path",
+				Usage: "Raw message file path (relative to lg directory)",
 			},
 			&cli.GenericFlag{
 				Name:  "deveui",
 				Value: new(devEUI),
-				Usage: "DevEUI",
+				Usage: "DevEUI [Device Unique Identifier]",
 			},
 			&cli.GenericFlag{
 				Name:  "generator",
@@ -115,7 +115,7 @@ func main() {
 			&cli.StringFlag{
 				Name:  "i1820",
 				Value: "",
-				Usage: "i1820 project [use it only with I1820 platform]",
+				Usage: "I1820 project name [Use this only with the I1820 platform otherwise leave it empty]",
 			},
 		},
 		Action: func(c *cli.Context) error {
@@ -131,13 +131,13 @@ func main() {
 				return err
 			}
 
-			// Create parent template
+			// Create parent template with some useful function
 			tmpl := template.New("lg").Funcs(template.FuncMap{
 				"now":   time.Now,
 				"randn": rand.Intn,
 			})
 
-			// Read data from the given message file, and then prase template strings.
+			// Read data from the given message file, and then prase template strings if exist.
 			var data []map[string]interface{}
 			if err := json.Unmarshal(file, &data); err != nil {
 				return err
