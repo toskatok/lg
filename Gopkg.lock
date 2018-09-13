@@ -11,14 +11,44 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:a19ba0ee64b03fc8c94ac6b6a825996b04888e88488eb3b6127627781673a322"
-  name = "github.com/aiotrc/uplink"
-  packages = ["lora"]
+  digest = "1:03ad33cafa348804c7736be2236c1d1577db549e238fdca6638b5862c4fe68d2"
+  name = "github.com/I1820/lanserver"
+  packages = ["models"]
   pruneopts = ""
-  revision = "5ffbfcaad55328016ee4cee4231a2ed5c8ba7a3b"
+  revision = "fedd5950c1a523485b0df360317a5cad3d7a5cb7"
 
 [[projects]]
-  digest = "1:4e3dde60e6be4a3fc63e7cbfb77ad061cbf412ac8e17f344bc71568785cd76e8"
+  branch = "master"
+  digest = "1:9bba3d83c04e7ce952ffe074df83940670c4a4b487bacb341808119fd3a2d80f"
+  name = "github.com/I1820/link"
+  packages = [
+    "models/aolab",
+    "protocols/lora",
+  ]
+  pruneopts = ""
+  revision = "236894a10a7b5f00c595ccaee950e11897afe078"
+
+[[projects]]
+  branch = "master"
+  digest = "1:8e8b0d2c7e9c106eb0f36afa9d207d2554d2961a4f749b2dd2580e2e651892bc"
+  name = "github.com/I1820/types"
+  packages = ["."]
+  pruneopts = ""
+  revision = "6012ada1de7ed1dd05775f92d266c3245585266a"
+
+[[projects]]
+  branch = "master"
+  digest = "1:a74730e052a45a3fab1d310fdef2ec17ae3d6af16228421e238320846f2aaec8"
+  name = "github.com/alecthomas/template"
+  packages = [
+    ".",
+    "parse",
+  ]
+  pruneopts = ""
+  revision = "a0175ee3bccc567396460bf5acd36800cb10c49c"
+
+[[projects]]
+  digest = "1:e85837cb04b78f61688c6eba93ea9d14f60d611e2aaf8319999b1a60d2dafbfa"
   name = "github.com/urfave/cli"
   packages = ["."]
   pruneopts = ""
@@ -27,7 +57,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:50afb1f38be5267c35d6833059aa0bd6bfaeac3e5c8efd3256b6022020c136d3"
+  digest = "1:e47b44162df6b6ee71a0403faa4c44d6f0747a6c471e7f5f0af454d0c9788ad4"
   name = "github.com/yosssi/gmq"
   packages = [
     "mqtt",
@@ -42,7 +72,10 @@
   analyzer-version = 1
   input-imports = [
     "github.com/2tvenom/cbor",
-    "github.com/aiotrc/uplink/lora",
+    "github.com/I1820/lanserver/models",
+    "github.com/I1820/link/models/aolab",
+    "github.com/I1820/link/protocols/lora",
+    "github.com/alecthomas/template",
     "github.com/urfave/cli",
     "github.com/yosssi/gmq/mqtt",
     "github.com/yosssi/gmq/mqtt/client",
