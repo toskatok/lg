@@ -33,7 +33,7 @@ func (g AolabGenerator) Topic() []byte {
 	return []byte(fmt.Sprintf("device/%s/rx", g.DevEUI))
 }
 
-// Generate generates lanserver message by converting input into cbor and generator
+// Generate generates lanserver message by converting input into json and using generator
 // parameters.
 func (g AolabGenerator) Generate(input interface{}) ([]byte, error) {
 	// input into json
@@ -49,7 +49,7 @@ func (g AolabGenerator) Generate(input interface{}) ([]byte, error) {
 		return nil, err
 	}
 
-	// lora message
+	// lanserver message
 	message, err := json.Marshal(models.RxMessage{
 		DevEUI: g.DevEUI,
 		Data:   b,
