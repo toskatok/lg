@@ -55,6 +55,8 @@ func (g *generator) Set(v string) error {
 		*g = 0
 	case "isrc":
 		*g = 1
+	case "atrovan":
+		*g = 2
 	default:
 		return fmt.Errorf("the %s generator hasn't been implemented yet", v)
 	}
@@ -110,7 +112,7 @@ func main() {
 			&cli.GenericFlag{
 				Name:  "generator",
 				Value: new(generator),
-				Usage: "Generator [isrc, aolab]",
+				Usage: "Generator [isrc, aolab, atrovan]",
 			},
 			&cli.StringFlag{
 				Name:  "i1820",
@@ -172,6 +174,8 @@ func main() {
 				g = generators.AolabGenerator{
 					DevEUI: devEUI,
 				}
+			case 2: // Atrovan
+				g = generators.AtrovanGenerator{}
 			}
 
 			// I1820 mode
