@@ -15,19 +15,19 @@ import (
 	"fmt"
 )
 
-// AolabGenerator generates data based on
-// lanserver protocol
-// and aolab model.
+// AtrovanGenerator generates data based on
+// atrovan protocol
+// and atrovan model.
 type AtrovanGenerator struct {
 }
 
-// Topic returns lanserver mqtt topic
+// Topic returns atrovan mqtt topic
 func (g AtrovanGenerator) Topic() []byte {
 	return []byte("v1/devices/me/telemetry")
 }
 
-// Generate generates lanserver message by converting input into cbor and generator
-// parameters.
+// Generate generates atrovan message by converting input into telemetries json
+// and using generator parameters.
 func (g AtrovanGenerator) Generate(input interface{}) ([]byte, error) {
 	// input into json
 	states, ok := input.(map[string]interface{})
