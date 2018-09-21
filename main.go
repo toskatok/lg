@@ -23,7 +23,6 @@ import (
 	"os/signal"
 	"path"
 	"path/filepath"
-	"strconv"
 	"strings"
 	"time"
 
@@ -34,29 +33,18 @@ import (
 	"github.com/urfave/cli"
 )
 
-type devEUI int64
-
-func (d *devEUI) Set(v string) (err error) {
-	i, err := strconv.ParseInt(v, 16, 64)
-	*d = devEUI(i)
-
-	return
-}
-
-func (d devEUI) String() string {
-	return fmt.Sprintf("%016X", int64(d))
-}
-
 type generator int
 
 func (g *generator) Set(v string) error {
 	switch v {
 	case "aolab":
-		*g = 0
-	case "isrc":
 		*g = 1
+	case "isrc":
+		*g = 0
 	case "atrovan":
 		*g = 2
+	case "fanco":
+		*g = 3
 	default:
 		return fmt.Errorf("the %s generator hasn't been implemented yet", v)
 	}
@@ -104,9 +92,9 @@ func main() {
 				Value: path.Join(dir, "message.json"),
 				Usage: "Raw message file path (relative to lg directory)",
 			},
-			&cli.GenericFlag{
+			&cli.StringFlag{
 				Name:  "deveui",
-				Value: new(devEUI),
+				Value: "",
 				Usage: "DevEUI [Device Unique Identifier]",
 			},
 			&cli.GenericFlag{
@@ -122,7 +110,7 @@ func main() {
 		},
 		Action: func(c *cli.Context) error {
 			// DevEUI
-			devEUI := c.Generic("deveui").(*devEUI).String()
+			devEUI := c.String("deveui")
 			fmt.Println(">>> Device")
 			fmt.Println(devEUI)
 			fmt.Println(">>>")
@@ -176,6 +164,10 @@ func main() {
 				}
 			case 2: // Atrovan
 				g = generators.AtrovanGenerator{}
+			case 3: // Fanco
+				g = generators.FancoGenerator{
+					ThingID: devEUI,
+				}
 			}
 
 			// I1820 mode
