@@ -73,8 +73,9 @@ func NewRunner(g generators.Generator, d time.Duration, s Source, rawurl string,
 	}
 	switch url.Scheme {
 	case "http", "https":
+		t = &HTTPTransport{}
 	case "mqtt":
-		t = MQTTTransport{}
+		t = &MQTTTransport{}
 	}
 	if err := t.Init(rawurl); err != nil {
 		return Runner{}, err
