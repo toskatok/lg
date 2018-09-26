@@ -14,46 +14,33 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"math/rand"
 	"os"
 	"os/signal"
-	"path"
-	"path/filepath"
 	"strings"
+	"text/template"
 	"time"
 
 	"github.com/I1820/lg/core"
 	"github.com/I1820/lg/generators"
-	"github.com/I1820/lg/receivers"
-	"github.com/alecthomas/template"
+	"github.com/spf13/viper"
 	"github.com/urfave/cli"
 )
 
-type generator int
-
-func (g *generator) Set(v string) error {
-	switch v {
-	case "aolab":
-		*g = 1
-	case "isrc":
-		*g = 0
-	case "atrovan":
-		*g = 2
-	case "fanco":
-		*g = 3
-	default:
-		return fmt.Errorf("the %s generator hasn't been implemented yet", v)
+// Config is a configuration structure for I1820/lg
+type Config struct {
+	Generator struct {
+		Name string
+		Info interface{} // this structure is not used in config, it is passed to generators
 	}
-	return nil
+	Token    string
+	Messages []map[string]interface{}
 }
 
-func (g *generator) String() string {
-	return string(*g)
-}
+// config variable contains current user configuration
+var config Config
 
 // message is used to populate templates in the given message file.
 var message struct {
@@ -61,9 +48,14 @@ var message struct {
 }
 
 func main() {
-	// dirname
-	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
-	if err != nil {
+	viper.SetConfigName("config") // name of config file (without extension)
+	viper.AddConfigPath(".")      // looking for config in the working directory
+
+	if err := viper.ReadInConfig(); err != nil { // find and read the config file
+		log.Fatalf("config file: %s \n", err)
+	}
+
+	if err := viper.Unmarshal(&config); err != nil { // parse configuration into Config structure
 		log.Fatal(err)
 	}
 
@@ -78,49 +70,17 @@ func main() {
 		},
 		Flags: []cli.Flag{
 			&cli.StringFlag{
-				Name:  "broker",
-				Value: "127.0.0.1:1883",
-				Usage: "MQTT `Broker` IP:Port address",
+				Name:  "destination",
+				Value: "mqtt://127.0.0.1:1883",
+				Usage: "scheme://(host or host:port)",
 			},
 			&cli.DurationFlag{
 				Name:  "rate",
 				Value: 1 * time.Millisecond,
 				Usage: "Send interval",
 			},
-			&cli.StringFlag{
-				Name:  "message",
-				Value: path.Join(dir, "message.json"),
-				Usage: "Raw message file path (relative to lg directory)",
-			},
-			&cli.StringFlag{
-				Name:  "deveui",
-				Value: "",
-				Usage: "DevEUI [Device Unique Identifier]",
-			},
-			&cli.GenericFlag{
-				Name:  "generator",
-				Value: new(generator),
-				Usage: "Generator [isrc, aolab, atrovan, fanco]",
-			},
-			&cli.StringFlag{
-				Name:  "i1820",
-				Value: "",
-				Usage: "I1820 project name [Use this only with the I1820 platform otherwise leave it empty]",
-			},
 		},
 		Action: func(c *cli.Context) error {
-			// DevEUI
-			devEUI := c.String("deveui")
-			fmt.Println(">>> Device")
-			fmt.Println(devEUI)
-			fmt.Println(">>>")
-
-			// Read message.json
-			file, err := ioutil.ReadFile(c.String("message"))
-			if err != nil {
-				return err
-			}
-
 			// Create parent template with some useful function
 			tmpl := template.New("lg").Funcs(template.FuncMap{
 				"now":   time.Now,
@@ -128,12 +88,8 @@ func main() {
 			})
 
 			// Read data from the given message file, and then prase template strings if exist.
-			var data []map[string]interface{}
-			if err := json.Unmarshal(file, &data); err != nil {
-				return err
-			}
 			fmt.Println(">>> Data")
-			for i, d := range data {
+			for i, d := range config.Messages {
 				fmt.Printf("%v\n", d)
 				for k, v := range d {
 					if s, ok := v.(string); ok {
@@ -147,49 +103,59 @@ func main() {
 			}
 			fmt.Println(">>>")
 
-			// Generator selection
+			// Generator selection and configuration
 			var g generators.Generator
-			switch *c.Generic("generator").(*generator) {
-			case 0: // ISRC
-				g = generators.ISRCGenerator{
-					DevEUI:          devEUI,
-					ApplicationName: "fake-application",
-					ApplicationID:   "13731372",
-					GatewayMac:      "b827ebffff633260",
-					DeviceName:      "fake-device",
+			switch config.Generator.Name {
+			case "isrc": // generators/isrc.go
+				var isrc generators.ISRCGenerator
+				// load genrator information from configuration file
+				if err := viper.UnmarshalKey("generator.info", &isrc); err != nil {
+					return err
 				}
-			case 1: // Aolab
-				g = generators.AolabGenerator{
-					DevEUI: devEUI,
+				g = isrc
+			case "aolab": // generators/aolab.go
+				var aolab generators.AolabGenerator
+				// load genrator information from configuration file
+				if err := viper.UnmarshalKey("generator.info", &aolab); err != nil {
+					return err
 				}
-			case 2: // Atrovan
-				g = generators.AtrovanGenerator{}
-			case 3: // Fanco
-				g = generators.FancoGenerator{
-					ThingID: devEUI,
+				g = aolab
+			case "atrovan": // generators/atrovan.go
+				var atrovan generators.AtrovanGenerator
+				// load genrator information from configuration file
+				if err := viper.UnmarshalKey("generator.info", &atrovan); err != nil {
+					return err
 				}
+				g = atrovan
+			case "fanco": // generators/fanco.go
+				var fanco generators.FancoGenerator
+				// load genrator information from configuration file
+				if err := viper.UnmarshalKey("generator.info", &fanco); err != nil {
+					return err
+				}
+				g = fanco
+			case "ttn": // generators/ttn.go
+				var ttn generators.TTNGenerator
+				// load genrator information from configuration file
+				if err := viper.UnmarshalKey("generator.info", &ttn); err != nil {
+					return err
+				}
+				g = ttn
+			default:
+				return fmt.Errorf("Generator %s is not supported yet", "")
 			}
-
-			// I1820 mode
-			var rs []receivers.Receiver
-			var counter int
-			if project := c.String("i1820"); project != "" {
-				rs = append(rs, receivers.Receiver{
-					Topic: []byte(fmt.Sprintf("i1820/project/%s/data", project)),
-					Handler: func(topicName, message []byte) {
-						counter++
-					},
-				})
-			}
+			fmt.Println(">>> Generator")
+			fmt.Printf("%+v\n", g)
+			fmt.Println(">>>")
 
 			// Runner
-			r, err := core.NewRunner(
-				g,
-				c.Duration("rate"),
-				func() interface{} {
+			r, err := core.NewRunner(core.RunnerConfig{
+				Generator: g,
+				Duration:  c.Duration("rate"),
+				Pick: func() interface{} {
 					message.Count++
 					d := make(map[string]interface{})
-					for k, v := range data[rand.Intn(len(data))] {
+					for k, v := range config.Messages[rand.Intn(len(config.Messages))] {
 						if tmpl, ok := v.(*template.Template); ok {
 							var b strings.Builder
 							if err := tmpl.Execute(&b, message); err != nil {
@@ -202,9 +168,9 @@ func main() {
 					}
 					return d
 				},
-				c.String("broker"),
-				rs...,
-			)
+				URL:   c.String("destination"),
+				Token: config.Token,
+			})
 			if err != nil {
 				return err
 			}
@@ -214,7 +180,7 @@ func main() {
 			go func() {
 				for {
 					time.Sleep(1 * time.Second)
-					fmt.Printf("%s -> %d\n", devEUI, r.Count())
+					fmt.Printf("%s -> %d\n", config.Generator.Name, r.Count())
 				}
 			}()
 
@@ -224,8 +190,7 @@ func main() {
 
 			<-sigc
 			r.Stop()
-			fmt.Printf("Total packets send to %s: %d\n", devEUI, r.Count())
-			fmt.Printf("Total packets receive from I1820: %d\n", counter)
+			fmt.Printf("Total packets send to %s: %d\n", config.Generator.Name, r.Count())
 
 			return nil
 		},
