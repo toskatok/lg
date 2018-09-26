@@ -33,7 +33,7 @@ type MQTTTransport struct {
 }
 
 // Init creates and connect mqtt client
-func (mt MQTTTransport) Init(url string) error {
+func (mt *MQTTTransport) Init(url string) error {
 	// Create an MQTT Client.
 	mt.cli = client.New(&client.Options{
 		// Define the processing of the error handler.
@@ -53,7 +53,7 @@ func (mt MQTTTransport) Init(url string) error {
 }
 
 // Transmit sends data on given mqtt topic
-func (mt MQTTTransport) Transmit(topic string, data []byte) error {
+func (mt *MQTTTransport) Transmit(topic string, data []byte) error {
 	return mt.cli.Publish(&client.PublishOptions{
 		QoS:       mqtt.QoS0,
 		TopicName: []byte(topic),
