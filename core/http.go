@@ -14,26 +14,31 @@
 package core
 
 import (
-	"bytes"
 	"fmt"
-	"net/http"
+
+	"github.com/go-resty/resty"
 )
 
 // HTTPTransport implements transport interface for http/https protocol
 type HTTPTransport struct {
-	url string
+	cli *resty.Client
 }
 
 // Init creates a http client
-func (ht *HTTPTransport) Init(url string) error {
-	ht.url = url
+func (ht *HTTPTransport) Init(url string, token string) error {
+	// TODO use SetAuthToken instead of setting it manually
+	ht.cli = resty.New().SetHeader("Authorization", token).SetHostURL(url)
 	return nil
 }
 
 // Transmit sends data with given topic that is used as url
 func (ht *HTTPTransport) Transmit(topic string, data []byte) error {
-	if _, err := http.Post(fmt.Sprintf("%s/%s", ht.url, topic), "application/json", bytes.NewReader(data)); err != nil {
+	resp, err := ht.cli.R().SetBody(data).Post(topic)
+	if err != nil {
 		return err
+	}
+	if resp.IsError() {
+		return fmt.Errorf("error response: %s", resp.Body())
 	}
 	return nil
 }
