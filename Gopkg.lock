@@ -37,17 +37,6 @@
   revision = "6012ada1de7ed1dd05775f92d266c3245585266a"
 
 [[projects]]
-  branch = "master"
-  digest = "1:a74730e052a45a3fab1d310fdef2ec17ae3d6af16228421e238320846f2aaec8"
-  name = "github.com/alecthomas/template"
-  packages = [
-    ".",
-    "parse",
-  ]
-  pruneopts = ""
-  revision = "a0175ee3bccc567396460bf5acd36800cb10c49c"
-
-[[projects]]
   digest = "1:e85837cb04b78f61688c6eba93ea9d14f60d611e2aaf8319999b1a60d2dafbfa"
   name = "github.com/urfave/cli"
   packages = ["."]
@@ -75,7 +64,6 @@
     "github.com/I1820/lanserver/models",
     "github.com/I1820/link/models/aolab",
     "github.com/I1820/link/protocols/lora",
-    "github.com/alecthomas/template",
     "github.com/urfave/cli",
     "github.com/yosssi/gmq/mqtt",
     "github.com/yosssi/gmq/mqtt/client",
