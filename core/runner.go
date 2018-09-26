@@ -117,7 +117,7 @@ func (r *Runner) Run() {
 					r.generator.Topic(),
 					message,
 				); err != nil {
-					log.Printf("MQTT Publish: %s", err)
+					log.Printf("Transmit: %s", err)
 				}
 
 				r.lck.Lock()
