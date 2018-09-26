@@ -14,22 +14,32 @@
 package core
 
 import (
+	"fmt"
 	"log"
 	"net/url"
 	"sync"
 	"time"
 
 	"github.com/I1820/lg/generators"
-	"github.com/I1820/lg/receivers"
 )
 
-// Source is called in order to create source data for generate
-type Source func() interface{}
+// Pick is called in order to pickup a data for generate method
+type Pick func() interface{}
 
 // Transport transports data to given topic based its network protocol
 type Transport interface {
-	Init(url string) error
+	Init(url string, token string) error
 	Transmit(topic string, data []byte) error
+}
+
+// RunnerConfig contains runner configuration
+// these configuration specifies host, rate and etc.
+type RunnerConfig struct {
+	Generator generators.Generator
+	Duration  time.Duration
+	Pick      Pick
+	Token     string
+	URL       string
 }
 
 // Runner runs given generator in specific intervals
@@ -37,7 +47,7 @@ type Runner struct {
 	generator generators.Generator
 	duration  time.Duration
 	counter   int64
-	source    Source
+	pick      Pick
 
 	transport Transport
 
@@ -47,27 +57,10 @@ type Runner struct {
 }
 
 // NewRunner creates new runner
-func NewRunner(g generators.Generator, d time.Duration, s Source, rawurl string, rs ...receivers.Receiver) (Runner, error) {
-	// TODO correct receivers
-	/*
-		for _, r := range rs {
-			if err := cli.Subscribe(&client.SubscribeOptions{
-				SubReqs: []*client.SubReq{
-					&client.SubReq{
-						TopicFilter: r.Topic,
-						QoS:         mqtt.QoS0,
-						Handler:     r.Handler,
-					},
-				},
-			}); err != nil {
-				return Runner{}, err
-			}
-		}
-	*/
-
+func NewRunner(config RunnerConfig) (Runner, error) {
 	// Find and configure the transport
 	var t Transport
-	url, err := url.Parse(rawurl)
+	url, err := url.Parse(config.URL)
 	if err != nil {
 		return Runner{}, err
 	}
@@ -76,16 +69,18 @@ func NewRunner(g generators.Generator, d time.Duration, s Source, rawurl string,
 		t = &HTTPTransport{}
 	case "mqtt":
 		t = &MQTTTransport{}
+	default:
+		return Runner{}, fmt.Errorf("Scheme %s is not supported yet", url.Scheme)
 	}
-	if err := t.Init(rawurl); err != nil {
+	if err := t.Init(url.Host, config.Token); err != nil {
 		return Runner{}, err
 	}
 
 	return Runner{
-		generator: g,
-		duration:  d,
+		generator: config.Generator,
+		duration:  config.Duration,
 		counter:   0,
-		source:    s,
+		pick:      config.Pick,
 
 		transport: t,
 
@@ -113,7 +108,7 @@ func (r *Runner) Run() {
 		for {
 			select {
 			case <-sendTick:
-				message, err := r.generator.Generate(r.source())
+				message, err := r.generator.Generate(r.pick())
 				if err != nil {
 					log.Printf("Generator Generate: %s", err)
 				}
