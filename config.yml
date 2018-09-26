@@ -1,0 +1,23 @@
+generator:
+  name: ttn
+  info:
+    applicationName: fan
+    applicationID: 5ba8a161509ade0358130d9a
+    devEUI: 000AE31955C049FC
+    deviceName: agrinode
+token: ttnIStheBEST
+messages:
+  - 100: 6750
+    101: 6606
+    lat: 10
+    lng: 10
+    count: "{{.Count}}"
+  - "rand": "{{randn 10}}"
+    "time": "{{now}}"
+    "count": "{{.Count}}"
+  - "100": 7000
+    "101": 6606
+    "count": "{{.Count}}"
+  - "100": 6500
+    "101": 6606
+    "count": "{{.Count}}"
