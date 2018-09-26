@@ -49,8 +49,6 @@ func (mt *MQTTTransport) Init(url string, token string) error {
 		Address:  url,
 		ClientID: []byte(fmt.Sprintf("I1820-lg-%d", rand.Intn(1024))),
 	})
-
-	return nil
 }
 
 // Transmit sends data on given mqtt topic
