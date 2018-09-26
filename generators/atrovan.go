@@ -22,8 +22,8 @@ type AtrovanGenerator struct {
 }
 
 // Topic returns atrovan mqtt topic
-func (g AtrovanGenerator) Topic() []byte {
-	return []byte("v1/devices/me/telemetry")
+func (g AtrovanGenerator) Topic() string {
+	return "v1/devices/me/telemetry"
 }
 
 // Generate generates atrovan message by converting input into telemetries json

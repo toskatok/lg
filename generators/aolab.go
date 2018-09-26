@@ -29,8 +29,8 @@ type AolabGenerator struct {
 }
 
 // Topic returns lanserver mqtt topic
-func (g AolabGenerator) Topic() []byte {
-	return []byte(fmt.Sprintf("device/%s/rx", g.DevEUI))
+func (g AolabGenerator) Topic() string {
+	return fmt.Sprintf("device/%s/rx", g.DevEUI)
 }
 
 // Generate generates lanserver message by converting input into json and using generator

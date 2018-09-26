@@ -17,5 +17,5 @@ package generators
 // based on given input. input can be nil.
 type Generator interface {
 	Generate(input interface{}) ([]byte, error)
-	Topic() []byte
+	Topic() string
 }

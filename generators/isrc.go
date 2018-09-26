@@ -36,8 +36,8 @@ type ISRCGenerator struct {
 }
 
 // Topic returns lora mqtt topic
-func (g ISRCGenerator) Topic() []byte {
-	return []byte(fmt.Sprintf("application/%s/device/%s/rx", g.ApplicationID, g.DevEUI))
+func (g ISRCGenerator) Topic() string {
+	return fmt.Sprintf("application/%s/device/%s/rx", g.ApplicationID, g.DevEUI)
 }
 
 // Generate generates lora message by converting input into cbor and generator
