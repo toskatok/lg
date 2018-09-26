@@ -100,7 +100,7 @@ func main() {
 			&cli.GenericFlag{
 				Name:  "generator",
 				Value: new(generator),
-				Usage: "Generator [isrc, aolab, atrovan]",
+				Usage: "Generator [isrc, aolab, atrovan, fanco]",
 			},
 			&cli.StringFlag{
 				Name:  "i1820",
