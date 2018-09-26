@@ -14,24 +14,23 @@
 package core
 
 import (
-	"fmt"
 	"log"
-	"math/rand"
+	"net/url"
 	"sync"
 	"time"
 
 	"github.com/I1820/lg/generators"
 	"github.com/I1820/lg/receivers"
-	"github.com/yosssi/gmq/mqtt"
-	"github.com/yosssi/gmq/mqtt/client"
 )
-
-func init() {
-	rand.Seed(time.Now().UnixNano())
-}
 
 // Source is called in order to create source data for generate
 type Source func() interface{}
+
+// Transport transports data to given topic based its network protocol
+type Transport interface {
+	Init(url string) error
+	Transmit(topic string, data []byte) error
+}
 
 // Runner runs given generator in specific intervals
 type Runner struct {
@@ -40,43 +39,45 @@ type Runner struct {
 	counter   int64
 	source    Source
 
-	cli *client.Client
+	transport Transport
+
 	lck sync.RWMutex
 
 	stop chan struct{}
 }
 
 // NewRunner creates new runner
-func NewRunner(g generators.Generator, d time.Duration, s Source, broker string, rs ...receivers.Receiver) (Runner, error) {
-	// Create an MQTT Client.
-	cli := client.New(&client.Options{
-		// Define the processing of the error handler.
-		ErrorHandler: func(err error) {
-			log.Println(err)
-		},
-	})
+func NewRunner(g generators.Generator, d time.Duration, s Source, rawurl string, rs ...receivers.Receiver) (Runner, error) {
+	// TODO correct receivers
+	/*
+		for _, r := range rs {
+			if err := cli.Subscribe(&client.SubscribeOptions{
+				SubReqs: []*client.SubReq{
+					&client.SubReq{
+						TopicFilter: r.Topic,
+						QoS:         mqtt.QoS0,
+						Handler:     r.Handler,
+					},
+				},
+			}); err != nil {
+				return Runner{}, err
+			}
+		}
+	*/
 
-	// Connect to the MQTT Server.
-	if err := cli.Connect(&client.ConnectOptions{
-		Network:  "tcp",
-		Address:  broker,
-		ClientID: []byte(fmt.Sprintf("I1820-lg-%d", rand.Intn(1024))),
-	}); err != nil {
+	// Find and configure the transport
+	var t Transport
+	url, err := url.Parse(rawurl)
+	if err != nil {
 		return Runner{}, err
 	}
-
-	for _, r := range rs {
-		if err := cli.Subscribe(&client.SubscribeOptions{
-			SubReqs: []*client.SubReq{
-				&client.SubReq{
-					TopicFilter: r.Topic,
-					QoS:         mqtt.QoS0,
-					Handler:     r.Handler,
-				},
-			},
-		}); err != nil {
-			return Runner{}, err
-		}
+	switch url.Scheme {
+	case "http", "https":
+	case "mqtt":
+		t = MQTTTransport{}
+	}
+	if err := t.Init(rawurl); err != nil {
+		return Runner{}, err
 	}
 
 	return Runner{
@@ -84,7 +85,8 @@ func NewRunner(g generators.Generator, d time.Duration, s Source, broker string,
 		duration:  d,
 		counter:   0,
 		source:    s,
-		cli:       cli,
+
+		transport: t,
 
 		stop: make(chan struct{}),
 	}, nil
@@ -115,11 +117,10 @@ func (r *Runner) Run() {
 					log.Printf("Generator Generate: %s", err)
 				}
 
-				if err := r.cli.Publish(&client.PublishOptions{
-					QoS:       mqtt.QoS0,
-					TopicName: r.generator.Topic(),
-					Message:   message,
-				}); err != nil {
+				if err := r.transport.Transmit(
+					r.generator.Topic(),
+					message,
+				); err != nil {
 					log.Printf("MQTT Publish: %s", err)
 				}
 
