@@ -28,11 +28,11 @@ import (
 // and [cbor](http://cbor.io/) model.
 // for historical reasons for refer to it as ISRC protocol
 type ISRCGenerator struct {
-	ApplicationID   string
-	ApplicationName string
-	DeviceName      string
-	DevEUI          string
-	GatewayMac      string
+	ApplicationID   string `mapstructure:"applicationID"`
+	ApplicationName string `mapstructure:"applicationName"`
+	DeviceName      string `mapstructure:"deviceName"`
+	DevEUI          string `mapstructure:"devEUI"`
+	GatewayMac      string `mapstructure:"gatewayMAC"`
 }
 
 // Topic returns lora mqtt topic
