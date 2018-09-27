@@ -34,7 +34,6 @@ type MQTTTransport struct {
 
 // Init creates and connect mqtt client
 func (mt *MQTTTransport) Init(url string, token string) error {
-	// TODO authorize with given token
 	// Create an MQTT Client.
 	mt.cli = client.New(&client.Options{
 		// Define the processing of the error handler.
@@ -48,6 +47,8 @@ func (mt *MQTTTransport) Init(url string, token string) error {
 		Network:  "tcp",
 		Address:  url,
 		ClientID: []byte(fmt.Sprintf("I1820-lg-%d", rand.Intn(1024))),
+		UserName: []byte(token),
+		Password: []byte(token),
 	})
 }
 
