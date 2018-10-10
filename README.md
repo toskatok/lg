@@ -87,3 +87,8 @@ with send interval of data:
 | 1ms      | 100%          |
 | 100us    | 52.3809524%   |
 | 10us     | 47.6190476%   |
+
+### Test System
+
+4 Core Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz
+8 Gb of RAM
