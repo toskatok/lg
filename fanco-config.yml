@@ -1,0 +1,6 @@
+generator:
+  name: fanco
+  info:
+    thingID: 5bbd104cefe940cb57dfeb76
+messages:
+  - count: "{{.Count}}"
