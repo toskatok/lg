@@ -2,5 +2,6 @@ generator:
   name: fanco
   info:
     thingID: 5bbd104cefe940cb57dfeb76
+token: 1BLzO2YYB1jH91pRB0cpeIdPMsM
 messages:
   - count: "{{.Count}}"
