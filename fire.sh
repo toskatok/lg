@@ -4,7 +4,7 @@ trap 'end' INT
 end() {
         echo "Let's finish"
 
-        pkill mqttlg
+        pkill lg
 }
 
 usage() {
@@ -23,9 +23,9 @@ main() {
 
         for i in $(seq 1 100); do
                 dev=$((i + 10))
-                ./mqttlg --rate $rate --deveui $dev --broker $broker &
+                ./lg --rate $rate --deveui $dev --broker $broker &
                 if [ $? ]; then
-                        echo "mqttlg $i: $!"
+                        echo "lg $i: $!"
                 else
                         exit
                 fi
