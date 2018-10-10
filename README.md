@@ -6,9 +6,13 @@
 **Sometimes we tell lies, sometimes we prove we don't lie. Let's prove ourselves.**
 
 ## Introduction
-This application gives a way for creating a load with MQTT.
+This application gives a way for creating a load with MQTT, HTTP ...
 MQTT is a messaging protocol and various platforms work with it so
 creating a load with MQTT creates a way for testing platforms.
+
+## Transport
+LG have an awesome way for customizing portocol named `Transport`.
+Transports give you a way for sending your generated data over your protocol with ease.
 
 ## Generator
 LG is fully customizable so you can generate data with
