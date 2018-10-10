@@ -61,3 +61,29 @@ with send interval of data:
 
 Please consider that HTTP requests cannot get their response in `100us` or lower interval so in these intervals there is no
 difference with `1ms` interval.
+
+### Fanco (over MQTT)
+With this load generator, we try to put a load on I1820 MQTT service in link component
+and we get the following results.
+
+```yml
+generator:
+  name: fanco
+  info:
+    thingID: 5bbd104cefe940cb57dfeb76
+token: 1BLzO2YYB1jH91pRB0cpeIdPMsM
+messages:
+  - count: "{{.Count}}"
+```
+
+These results show generated parsed information ratio (number of parsed data / number of received data)
+with send interval of data:
+
+| Interval | Accept Ratio  |
+|:---------|:-------------:|
+| 1s       | 100%          |
+| 100ms    | 100%          |
+| 10ms     | 100%          |
+| 1ms      | 100%          |
+| 100us    | 52.3809524%   |
+| 10us     | 47.6190476%   |
