@@ -30,7 +30,7 @@ In `config.yml` you can specifies generator configuration. If your destination h
 and if it has `mqtt://` your transport is MQTT.
 
 ## Set I1820 on fire
-### TTN
+### TTN (over HTTP)
 With this load generator, we try to put a load on I1820 TTN Integration module in link component
 and we get the following results.
 
@@ -47,6 +47,17 @@ messages:
   - count: "{{.Count}}"
 ```
 
-These results show generated parsed information ratio (number of parsed data / number of received data) with data interval:
+These results show generated parsed information ratio (number of parsed data / number of received data)
+with send interval of data:
 
-![result](results/chart.png)
+| Interval | Accept Ratio  |
+|:---------|:-------------:|
+| 1s       | 100%          |
+| 100ms    | 100%          |
+| 10ms     | 100%          |
+| 1ms      | 100%          |
+| 100us    | 100%          |
+| 10us     | 100%          |
+
+Please consider that HTTP requests cannot get their response in `100us` or lower interval so in these intervals there is no
+difference with `1ms` interval.
