@@ -90,5 +90,6 @@ with send interval of data:
 
 ### Test System
 
-4 Core Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz
-8 Gb of RAM
+- 4 Core Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz
+- 8 Gb of RAM
+- SSD
