@@ -23,8 +23,11 @@ For this LG has the `Generator` interface is defined in `generator/`.
 You can run LG with following syntax:
 
 ```sh
-lg --broker 127.0.0.1:1883 --deveui 0000000000000073 --rate 1ms
+lg --destination http://127.0.0.1:1883 --rate 1ms
 ```
+
+In `config.yml` you can specifies generator configuration. If your destination has scheme `http://` your transport is HTTP
+and if it has `mqtt://` your transport is MQTT.
 
 ## Set I1820 on fire
 With this load generator, we try to put a load on I1820 and we get the following results.
