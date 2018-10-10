@@ -30,7 +30,23 @@ In `config.yml` you can specifies generator configuration. If your destination h
 and if it has `mqtt://` your transport is MQTT.
 
 ## Set I1820 on fire
-With this load generator, we try to put a load on I1820 and we get the following results.
+### TTN
+With this load generator, we try to put a load on I1820 TTN Integration module in link component
+and we get the following results.
+
+```yml
+generator:
+  name: ttn
+  info:
+    applicationName: fan
+    applicationID: 5ba3f19c87a142b0a840fae0
+    devEUI: 000AE31955C049FC
+    deviceName: agrinode
+token: ttnIStheBEST
+messages:
+  - count: "{{.Count}}"
+```
+
 These results show generated parsed information ratio (number of parsed data / number of received data) with data interval:
 
 ![result](results/chart.png)
