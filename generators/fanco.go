@@ -22,7 +22,7 @@ import (
 // FancoGenerator generates data with allthingstalk format and
 // sends them with pure json.
 type FancoGenerator struct {
-	ThingID string
+	ThingID string `mapstructure:"thingID"`
 }
 
 // Topic returns I1820 thing state topic.
