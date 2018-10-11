@@ -113,13 +113,6 @@ func main() {
 					return err
 				}
 				g = isrc
-			case "aolab": // generators/aolab.go
-				var aolab generators.AolabGenerator
-				// load genrator information from configuration file
-				if err := viper.UnmarshalKey("generator.info", &aolab); err != nil {
-					return err
-				}
-				g = aolab
 			case "atrovan": // generators/atrovan.go
 				var atrovan generators.AtrovanGenerator
 				// load genrator information from configuration file
