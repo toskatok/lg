@@ -10,33 +10,6 @@
   revision = "384e799bd841fc59220d0f5911b8cbde7b380875"
 
 [[projects]]
-  branch = "master"
-  digest = "1:03ad33cafa348804c7736be2236c1d1577db549e238fdca6638b5862c4fe68d2"
-  name = "github.com/I1820/lanserver"
-  packages = ["models"]
-  pruneopts = ""
-  revision = "fedd5950c1a523485b0df360317a5cad3d7a5cb7"
-
-[[projects]]
-  branch = "master"
-  digest = "1:9bba3d83c04e7ce952ffe074df83940670c4a4b487bacb341808119fd3a2d80f"
-  name = "github.com/I1820/link"
-  packages = [
-    "models/aolab",
-    "protocols/lora",
-  ]
-  pruneopts = ""
-  revision = "236894a10a7b5f00c595ccaee950e11897afe078"
-
-[[projects]]
-  branch = "master"
-  digest = "1:8e8b0d2c7e9c106eb0f36afa9d207d2554d2961a4f749b2dd2580e2e651892bc"
-  name = "github.com/I1820/types"
-  packages = ["."]
-  pruneopts = ""
-  revision = "6012ada1de7ed1dd05775f92d266c3245585266a"
-
-[[projects]]
   digest = "1:eb53021a8aa3f599d29c7102e65026242bdedce998a54837dc67f14b6a97c5fd"
   name = "github.com/fsnotify/fsnotify"
   packages = ["."]
@@ -213,9 +186,6 @@
   analyzer-version = 1
   input-imports = [
     "github.com/2tvenom/cbor",
-    "github.com/I1820/lanserver/models",
-    "github.com/I1820/link/models/aolab",
-    "github.com/I1820/link/protocols/lora",
     "github.com/go-resty/resty",
     "github.com/spf13/viper",
     "github.com/urfave/cli",
