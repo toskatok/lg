@@ -16,16 +16,11 @@ package core
 import (
 	"fmt"
 	"log"
-	"math/rand"
-	"time"
 
+	"github.com/gobuffalo/uuid"
 	"github.com/yosssi/gmq/mqtt"
 	"github.com/yosssi/gmq/mqtt/client"
 )
-
-func init() {
-	rand.Seed(time.Now().UnixNano())
-}
 
 // MQTTTransport implements transport interface for mqtt protocol
 type MQTTTransport struct {
@@ -42,11 +37,17 @@ func (mt *MQTTTransport) Init(url string, token string) error {
 		},
 	})
 
+	// generates random uuid based on timestamp and mac address
+	id, err := uuid.NewV1()
+	if err != nil { // why can uuid creation fail?
+		return err
+	}
+
 	// Connect to the MQTT Server.
 	return mt.cli.Connect(&client.ConnectOptions{
 		Network:  "tcp",
 		Address:  url,
-		ClientID: []byte(fmt.Sprintf("I1820-lg-%d", rand.Intn(1024))),
+		ClientID: []byte(fmt.Sprintf("I1820-lg-%v", id)),
 		UserName: []byte(token),
 		Password: []byte(token),
 	})
