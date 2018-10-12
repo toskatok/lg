@@ -40,3 +40,7 @@
 [[constraint]]
   name = "github.com/go-resty/resty"
   version = "1.9.1"
+
+[[constraint]]
+  name = "github.com/satori/go.uuid"
+  version = "1.2.0"
