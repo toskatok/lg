@@ -14,8 +14,8 @@ before_install:
   # To install latest version, use `go get -u github.com/golang/dep/cmd/dep`
 
   # Install linters
-  - go get -u github.com/golang/lint/golint              # Linter
-  - go get -u github.com/kisielk/errcheck                # errcheck checks that you checked errors.
+  - go get -u golang.org/x/lint/golint              # Linter
+  - go get -u github.com/kisielk/errcheck           # errcheck checks that you checked errors.
 
 install:
   - dep ensure
