@@ -17,7 +17,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/gobuffalo/uuid"
+	uuid "github.com/satori/go.uuid"
 	"github.com/yosssi/gmq/mqtt"
 	"github.com/yosssi/gmq/mqtt/client"
 )
@@ -38,10 +38,7 @@ func (mt *MQTTTransport) Init(url string, token string) error {
 	})
 
 	// generates random uuid based on timestamp and mac address
-	id, err := uuid.NewV1()
-	if err != nil { // why can uuid creation fail?
-		return err
-	}
+	id := uuid.NewV1()
 
 	// Connect to the MQTT Server.
 	return mt.cli.Connect(&client.ConnectOptions{
