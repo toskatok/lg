@@ -25,22 +25,13 @@ import (
 
 	"github.com/I1820/lg/core"
 	"github.com/I1820/lg/generators"
+	"github.com/I1820/lg/models"
 	"github.com/spf13/viper"
 	"github.com/urfave/cli"
 )
 
-// Config is a configuration structure for I1820/lg
-type Config struct {
-	Generator struct {
-		Name string
-		Info interface{} // this structure is not used in config, it is passed to generators
-	}
-	Token    string
-	Messages []map[string]interface{}
-}
-
 // config variable contains current user configuration
-var config Config
+var config models.Config
 
 // message is used to populate templates in the given message file.
 var message struct {
