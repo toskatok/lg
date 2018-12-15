@@ -1,5 +1,4 @@
 openapi: 3.0.0
-# Added by API Auto Mocking Plugin
 servers:
   - description: SwaggerHub API Auto Mocking
     url: https://virtserver.swaggerhub.com/I1820/i1820-lg/1.0.0
@@ -21,7 +20,7 @@ paths:
   /instances:
     post:
       tags:
-        - instance
+        - instances
       summary: runs new generator instance
       parameters:
         - in: query
