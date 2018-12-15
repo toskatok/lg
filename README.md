@@ -2,6 +2,7 @@
 
 [![Travis branch](https://img.shields.io/travis/com/I1820/lg/master.svg?style=flat-square)](https://travis-ci.com/I1820/lg)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/b6019269d2cf4b11897acd4340e78bdc)](https://www.codacy.com/app/i1820/lg?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=I1820/lg&amp;utm_campaign=Badge_Grade)
+[![GoReleaser](https://img.shields.io/badge/powered%20by-goreleaser-green.svg?style=flat-square)](https://github.com/goreleaser)
 
 **Sometimes we tell lies, sometimes we prove we don't lie. Let's prove ourselves.**
 
