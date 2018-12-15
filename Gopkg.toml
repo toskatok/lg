@@ -44,3 +44,28 @@
 [[constraint]]
   name = "github.com/satori/go.uuid"
   version = "1.2.0"
+
+[[constraint]]
+  name = "gopkg.in/go-playground/validator.v9"
+  version = "9.21.0"
+
+[[constraint]]
+  name = "github.com/gobuffalo/buffalo"
+  version = "0.13.0"
+
+[[constraint]]
+  name = "github.com/gobuffalo/envy"
+  version = "1.6.3"
+
+[[constraint]]
+  name = "github.com/gobuffalo/suite"
+  version = "2.1.4"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/gobuffalo/x"
+
+[[constraint]]
+  name = "github.com/rs/cors"
+  version = "1.4.0"
+
