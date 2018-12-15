@@ -47,6 +47,7 @@ func App() *buffalo.App {
 		app.GET("/about", AboutHandler)
 		api := app.Group("/api")
 		{
+			api.Resource("/instances", InstancesResource{})
 		}
 	}
 
