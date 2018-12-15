@@ -69,3 +69,7 @@
   name = "github.com/rs/cors"
   version = "1.4.0"
 
+
+[[constraint]]
+  name = "github.com/mitchellh/mapstructure"
+  version = "1.0.0"
