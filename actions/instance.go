@@ -77,3 +77,13 @@ func (v InstancesResource) Show(c buffalo.Context) error {
 
 	return c.Render(http.StatusOK, r.JSON(i.R.Count()))
 }
+
+// Destroy stops given instance and remove it from the instances list.
+// This function is mapped to the path DELETE /instances/{instance_id}
+func (v InstancesResource) Destroy(c buffalo.Context) error {
+	id := c.Param("instance_id")
+	i := instances[id]
+	i.Stop()
+
+	return c.Render(http.StatusOK, r.JSON(true))
+}
