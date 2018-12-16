@@ -28,7 +28,7 @@ func App() *buffalo.App {
 			PreWares: []buffalo.PreWare{
 				cors.Default().Handler,
 			},
-			SessionName: "_pm_session",
+			SessionName: "_lg_session",
 		})
 
 		// If no content type is sent by the client
