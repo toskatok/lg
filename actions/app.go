@@ -1,6 +1,8 @@
 package actions
 
 import (
+	"net/http"
+
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/envy"
 	contenttype "github.com/gobuffalo/mw-contenttype"
@@ -44,6 +46,8 @@ func App() *buffalo.App {
 		}
 
 		// Routes
+		// swagger ui
+		app.ServeFiles("/swagger", http.Dir("swagger"))
 		app.GET("/about", AboutHandler)
 		api := app.Group("/api")
 		{
