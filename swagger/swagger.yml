@@ -1,0 +1,138 @@
+openapi: 3.0.0
+servers:
+  - url: /api
+
+info:
+  description: Fully customizable MQTT based load generator
+  version: "1.0.0"
+  title: I1820 Load Generator API
+  contact:
+    name: Parham Alvani
+    email: parham.alvani@gmail.com
+  license:
+    name: GPL 3.0
+    url: https://www.gnu.org/licenses/gpl-3.0.en.html
+
+tags:
+  - name: instances
+    description: Manage running instances
+paths:
+  /instances/{instance_id}:
+    get:
+      tags:
+        - instances
+      summary: shows the detail of given instance
+      parameters:
+        - in: path
+          name: instance_id
+          required: true
+          schema:
+            type: string
+          description: instance identification
+      responses:
+        '200':
+          description: new instance is up and running
+          content:
+            application/json:
+              schema:
+                type: integer
+        '400':
+          description: 'invalid input, object invalid'
+
+  /instances:
+    get:
+      tags:
+        - instances
+      summary: lists generator instances
+      responses:
+        '200':
+          description: instance listed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  $ref: '#/components/schemas/Instance'
+    post:
+      tags:
+        - instances
+      summary: runs new generator instance
+      parameters:
+        - in: query
+          name: destination
+          schema:
+            type: string
+            format: uri
+            default: 'mqtt://127.0.0.1:1883'
+          description: 'scheme://(host or host:port)'
+        - in: query
+          name: rate
+          schema:
+            type: string
+            example: 1s
+            default: 1ms
+          description: send interval
+      responses:
+        '200':
+          description: new instance is up and running
+        '400':
+          description: 'invalid input, object invalid'
+        '500':
+          description: 'Internal server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - type: object
+                properties:
+                  name:
+                    type: string
+                    example: 'Elie'
+              - $ref: '#/components/schemas/Config'
+        description: Instance configuration
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        trace:
+          type: string
+        code:
+          type: integer
+    Instance:
+      type: object
+      properties:
+        R:
+          type: object
+        G:
+          type: object
+    Config:
+      type: object
+      properties:
+        generator:
+          type: object
+          properties:
+            name:
+              type: string
+              example: fanco
+            info:
+              type: object
+              example:
+                thingID: 5bbd104cefe940cb57dfeb76
+        token:
+          type: string
+          example: 1BLzO2YYB1jH91pRB0cpeIdPMsM
+        messages:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          example:
+            - count: "{{.Count}}"
