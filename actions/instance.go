@@ -35,9 +35,10 @@ type InstancesResource struct {
 	buffalo.Resource
 }
 
-// List returns all running instances
+// List returns all running instances This function is mapped
+// to the path GET /instances
 func (v InstancesResource) List(c buffalo.Context) error {
-	return c.Render(http.StatusOK, r.JSON([]int{}))
+	return c.Render(http.StatusOK, r.JSON(instances))
 }
 
 // Create runs new generator instance. This function is mapped
@@ -66,4 +67,13 @@ func (v InstancesResource) Create(c buffalo.Context) error {
 	instances[req.Name] = i
 
 	return c.Render(http.StatusOK, r.JSON(true))
+}
+
+// Show shows the detail of given instance. This function is mapped
+// to the path GET /instances/{instance_id}
+func (v InstancesResource) Show(c buffalo.Context) error {
+	id := c.Param("instance_id")
+	i := instances[id]
+
+	return c.Render(http.StatusOK, r.JSON(i.R.Count()))
 }
