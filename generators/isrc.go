@@ -17,6 +17,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/2tvenom/cbor"
@@ -58,7 +59,7 @@ type TxInfo struct {
 // with [cbor](http://cbor.io/).
 // for historical reasons for refer to it as ISRC protocol
 type ISRCGenerator struct {
-	ApplicationID   string `mapstructure:"applicationID"`
+	ApplicationID   int    `mapstructure:"applicationID"`
 	ApplicationName string `mapstructure:"applicationName"`
 	DeviceName      string `mapstructure:"deviceName"`
 	DevEUI          string `mapstructure:"devEUI"`
@@ -82,7 +83,7 @@ func (g ISRCGenerator) Generate(input interface{}) ([]byte, error) {
 
 	// lora message
 	message, err := json.Marshal(RxMessage{
-		ApplicationID:   g.ApplicationID,
+		ApplicationID:   strconv.Itoa(g.ApplicationID),
 		ApplicationName: g.ApplicationName,
 		DeviceName:      g.DeviceName,
 		DevEUI:          g.DevEUI,
