@@ -62,7 +62,6 @@ func NewInstance(config Config, rate time.Duration, destination string) (*Instan
 	}
 
 	// Generator selection and configuration
-	var g generators.Generator
 	switch config.Generator.Name {
 	case "isrc": // generators/isrc.go
 		var isrc generators.ISRCGenerator
@@ -70,36 +69,36 @@ func NewInstance(config Config, rate time.Duration, destination string) (*Instan
 		if err := mapstructure.Decode(config.Generator.Info, &isrc); err != nil {
 			return nil, err
 		}
-		g = isrc
+		instance.G = isrc
 	case "atrovan": // generators/atrovan.go
 		var atrovan generators.AtrovanGenerator
 		// load genrator information from configuration file
 		if err := mapstructure.Decode(config.Generator.Info, &atrovan); err != nil {
 			return nil, err
 		}
-		g = atrovan
+		instance.G = atrovan
 	case "fanco": // generators/fanco.go
 		var fanco generators.FancoGenerator
 		// load genrator information from configuration file
 		if err := mapstructure.Decode(config.Generator.Info, &fanco); err != nil {
 			return nil, err
 		}
-		g = fanco
+		instance.G = fanco
 	case "ttn": // generators/ttn.go
 		var ttn generators.TTNGenerator
 		// load genrator information from configuration file
 		if err := mapstructure.Decode(config.Generator.Info, &ttn); err != nil {
 			return nil, err
 		}
-		g = ttn
+		instance.G = ttn
 	default:
 		return nil, fmt.Errorf("Generator %s is not supported yet", config.Generator.Name)
 	}
-	instance.G = g
 
 	// Runner creation
-	r, err := core.NewRunner(core.RunnerConfig{
-		Generator: g,
+	var err error
+	instance.R, err = core.NewRunner(core.RunnerConfig{
+		Generator: instance.G,
 		Duration:  rate,
 		Pick: func() interface{} { // runs on each message
 			instance.message.Count++
@@ -123,7 +122,6 @@ func NewInstance(config Config, rate time.Duration, destination string) (*Instan
 	if err != nil {
 		return nil, err
 	}
-	instance.R = r
 
 	return instance, nil
 }
