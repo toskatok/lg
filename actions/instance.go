@@ -21,8 +21,14 @@ import (
 	"github.com/gobuffalo/buffalo"
 )
 
+// instance creation request
+type instanceReq struct {
+	Name string
+	models.Config
+}
+
 // list of the running instances
-var instances []models.Instance
+var instances map[string]*models.Instance = make(map[string]*models.Instance)
 
 // InstancesResource manages instances of load generators.
 type InstancesResource struct {
@@ -37,10 +43,11 @@ func (v InstancesResource) List(c buffalo.Context) error {
 // Create runs new generator instance. This function is mapped
 // to the path POST /instances
 func (v InstancesResource) Create(c buffalo.Context) error {
-	var config models.Config
-	if err := c.Bind(&config); err != nil {
+	var req instanceReq
+	if err := c.Bind(&req); err != nil {
 		return c.Error(http.StatusBadRequest, err)
 	}
+	var config models.Config = req.Config
 
 	rate, err := time.ParseDuration(c.Param("rate"))
 	if err != nil {
@@ -56,6 +63,7 @@ func (v InstancesResource) Create(c buffalo.Context) error {
 		return c.Error(http.StatusInternalServerError, err)
 	}
 	i.Run()
+	instances[req.Name] = i
 
 	return c.Render(http.StatusOK, r.JSON(true))
 }
