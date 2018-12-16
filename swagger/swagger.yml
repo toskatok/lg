@@ -121,7 +121,6 @@ components:
           properties:
             name:
               type: string
-              example: fanco
             info:
               type: object
               example:
@@ -136,3 +135,7 @@ components:
             additionalProperties: {}
           example:
             - count: "{{.Count}}"
+              100: 6500
+              101: 6000
+            - 100: 7000
+              101: 6000
