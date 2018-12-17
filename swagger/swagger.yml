@@ -36,8 +36,24 @@ paths:
             application/json:
               schema:
                 type: integer
-        '400':
-          description: 'invalid input, object invalid'
+        '404':
+          description: instnace not found
+    delete:
+      tags:
+        - instances
+      summary: stops the given instance and removes it
+      parameters:
+        - in: path
+          name: instance_id
+          required: true
+          schema:
+            type: string
+          description: instance identification
+      responses:
+        '200':
+          description: given instance was removed successfully
+        '404':
+          description: instance not found
 
   /instances:
     get:
