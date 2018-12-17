@@ -73,3 +73,7 @@
 [[constraint]]
   name = "github.com/mitchellh/mapstructure"
   version = "1.0.0"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/googollee/go-socket.io"
