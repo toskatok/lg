@@ -12,7 +12,10 @@ MQTT is a messaging protocol and various platforms work with it so
 creating a load with MQTT creates a way for testing platforms.
 
 LG has an executable version that you can run on your system with ease.
-Besides, it has a server version that has APIs that are listed [here](https://app.swaggerhub.com/apis/I1820/i1820-lg/1.0.0).
+Besides, it has a server version which has APIs that are listed [here](https://app.swaggerhub.com/apis/I1820/i1820-lg/1.0.0).
+In the server version reports about the status of each test's instance are emitted on
+the socket.io room which has the name I1820,
+with an event that has the name of its instance.
 
 ## Transport
 LG have an awesome way for customizing portocol named `Transport`.
