@@ -1,4 +1,3 @@
-
 openapi: 3.0.0
 servers:
   - url: /api
@@ -92,6 +91,11 @@ paths:
       responses:
         '200':
           description: new instance is up and running
+          content:
+            application/json:
+              schema:
+                type: boolean
+                example: true
         '400':
           description: 'invalid input, object invalid'
         '500':
