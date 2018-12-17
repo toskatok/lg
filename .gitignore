@@ -17,3 +17,6 @@ vendor/
 # binaries
 lg
 !lg/
+
+# .env
+.env
