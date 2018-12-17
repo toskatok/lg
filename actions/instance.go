@@ -14,6 +14,7 @@
 package actions
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -73,16 +74,23 @@ func (v InstancesResource) Create(c buffalo.Context) error {
 // to the path GET /instances/{instance_id}
 func (v InstancesResource) Show(c buffalo.Context) error {
 	id := c.Param("instance_id")
-	i := instances[id]
+	i, ok := instances[id]
+	if !ok {
+		return c.Error(http.StatusNotFound, fmt.Errorf("There is no instnace with name %s", id))
+	}
 
 	return c.Render(http.StatusOK, r.JSON(i.R.Count()))
 }
 
-// Destroy stops given instance and remove it from the instances list.
+// Destroy stops given instance and removes it from the instances list.
 // This function is mapped to the path DELETE /instances/{instance_id}
 func (v InstancesResource) Destroy(c buffalo.Context) error {
 	id := c.Param("instance_id")
-	i := instances[id]
+	i, ok := instances[id]
+	if !ok {
+		return c.Error(http.StatusNotFound, fmt.Errorf("There is no instnace with name %s", id))
+	}
+
 	i.Stop()
 	delete(instances, id)
 
