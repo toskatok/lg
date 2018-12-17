@@ -1,38 +1,27 @@
 language: go
 go:
-  - "1.11"
-
+- '1.11'
 env:
   global:
-    - secure: KfoaYYuPG1APVJXyxJdRPeVkHugPUPYld4xl4RssiaJB8mmsq3B6iDnusUcGI3b4h3gAMzQyBjnperIZuVeTk23EAOReJN3AuOiIZbAksgh6YHxWdZw54waPkvB/FDNnq5SKJeYO6YRayu2LqxYXHximLjMui5PybBjwVoJ1bx9rqz115R0BZFmWIwcBwuvaMewFMskYx/rtzCnrdc4M7AI4xjjFpemyi/AWi/slov0NmfhVQGLb7U36sO95t0It8PKu6UTmHS1ciflaNHzoiiBd3GYHZp6eiWA2jWvSKtT2mrB0n24UhfzGvqMMU9SyiScgNMyFcxFneRP7ma9SSj6UA+efPukwhoypUxQuGSbibhph61YxwHbuUoobEVSCQhDAWIVdB+mIabSnKjd3wH3dWMa2P8CaOaQsKPREspmiAy+sukCCyEgLgBYCC9Co2dQuTpzdknc/RdC83BoN0fvVVX7kot3CDY2RrDhTwqru80UoDH+/wGUzYMiv+ckDmtfjEQMx8u8I4ZOoH/16NFiBvckcyqQY6Z3UM9nPJUoCZQEtjY6RhpnrVQGnHUihbhyegqEa8qJbOn6xF5jjbNUx/gvF7yT/twg3D6axA0uabnuVwKLVTNx7lx2NvI+F2/cFJYAlTq3hzWrchbHlu53+LJqX6fT26fJwIB9OzKI=
-
+    secure: RpdM2nM1zPlWFZ1NRW3yCMtDfNMA24SVlLOo0q9jfwW7NptzC9PA/VgltRVZwz5SwNsbXraXxc3NYIilhP8UF8Xn5WyJvMgDwXVpKpB8z2tZ735ivLB72ziXgxg/8I59DHfTiO1BgMHKyWYguFxrzoKvpxMVmqTnmszDrlDCmyyL4srj2QmH8ZQhFQlMJyUg/vbGplfyKD01+jVGvANtZTEWjxIqI53zpRDdkjJNEAkVcHTJzplcmy4CejmrKHvuDY8xvIX7j9SnR4pYBAjrltPe10xrsJl18H4EG4lonnaOcNVX+M9RYwDQ671HSp7kvYPvLY8qbqpK5GpUoUUl/cxLF6boYX/mNWxfTATLpX7u66crQcte4QdzED50+Ah7c/5Jjr6r3X9YTrPTef2r5DnNanjIicbtr+Gt05QmhNDsip/aDvo4TPvBluq0MR8gHWdLPjnJayD8saBwVUIlPzqVZl7NMKHP8rXTsxNZfIE76qtJ5UC8A4yWhVME6k/Ub+c9ekYBmTg8lN7IOS0qUGhHNhXIdLT+bqGdc81DKlRsznLkq2LAh2hrR0B6Hneet6ETq9wZq6Rqz+cw+1RwJCIk7T20s/mvKPdVmeZkzFlbP+L7SgTsqXk/PjkYY25hFmO8u5GgjGNfUttcBkYTeqDeiWY17bYj1UdWq1uTg1c=
 before_install:
-  # Setup some env variables
-  - GO_FILES=$(find . -iname '*.go' )  # All the .go files
-  - PKGS=$(go list ./... )             # All the import paths
-
-  # Setup dependency management tool
-  - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
-
-  # Install linters
-  - go get -u golang.org/x/lint/golint              # Linter
-  - go get -u github.com/kisielk/errcheck           # errcheck checks that you checked errors.
-
+- GO_FILES=$(find . -iname '*.go' )
+- PKGS=$(go list ./... )
+- curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+- go get -u golang.org/x/lint/golint
+- go get -u github.com/kisielk/errcheck
 install:
-  - dep ensure
-
+- dep ensure
 script:
-  - go vet -v $PKGS                   # go vet is the official Go static analyzer
-  - errcheck -verbose $PKGS           # Check for unchecked errors
-  - golint -set_exit_status $PKGS     # One last linter
-
-# calls goreleaser
+- go vet -v $PKGS
+- errcheck -verbose $PKGS
+- golint -set_exit_status $PKGS
 before_deploy:
-  - git checkout Gopkg.lock
+- git checkout Gopkg.lock
 deploy:
-  - provider: script
-    skip_cleanup: true
-    script: curl -sL https://git.io/goreleaser | bash
-    on:
-      tags: true
-      condition: $TRAVIS_OS_NAME = linux
+- provider: script
+  skip_cleanup: true
+  script: curl -sL https://git.io/goreleaser | bash
+  on:
+    tags: true
+    condition: "$TRAVIS_OS_NAME = linux"
