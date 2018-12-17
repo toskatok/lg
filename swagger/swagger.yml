@@ -1,3 +1,4 @@
+
 openapi: 3.0.0
 servers:
   - url: /api
@@ -137,6 +138,7 @@ components:
           properties:
             name:
               type: string
+              example: fanco
             info:
               type: object
               example:
