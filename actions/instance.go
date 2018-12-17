@@ -65,6 +65,9 @@ func (v InstancesResource) Create(c buffalo.Context) error {
 		return c.Error(http.StatusInternalServerError, err)
 	}
 	i.Run()
+	go func() {
+		socket.BroadcastTo("I1820", req.Name, i.R.Count())
+	}()
 	instances[req.Name] = i
 
 	return c.Render(http.StatusOK, r.JSON(true))

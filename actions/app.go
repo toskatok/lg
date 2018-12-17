@@ -1,6 +1,7 @@
 package actions
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/gobuffalo/buffalo"
@@ -10,6 +11,7 @@ import (
 	validator "gopkg.in/go-playground/validator.v9"
 
 	"github.com/gobuffalo/x/sessions"
+	socketio "github.com/googollee/go-socket.io"
 	"github.com/rs/cors"
 )
 
@@ -18,6 +20,7 @@ import (
 var ENV = envy.Get("GO_ENV", "development")
 var app *buffalo.App
 var validate *validator.Validate
+var socket *socketio.Server
 
 // App is where all routes and middleware for buffalo
 // should be defined. This is the nerve center of your
@@ -45,10 +48,18 @@ func App() *buffalo.App {
 			app.Use(paramlogger.ParameterLogger)
 		}
 
+		// socket.io initiation
+		sio, err := socketio.NewServer(nil)
+		if err != nil {
+			log.Fatal(err)
+		}
+		socket = sio // moves it into global scope
+
 		// Routes
 		// swagger ui
 		app.ServeFiles("/swagger", http.Dir("swagger"))
 		app.GET("/about", AboutHandler)
+		app.Mount("/socket.io/", sio) // handles the socket io
 		api := app.Group("/api")
 		{
 			api.Resource("/instances", InstancesResource{})
