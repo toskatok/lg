@@ -11,6 +11,9 @@ This application gives a way for creating a load with MQTT, HTTP ...
 MQTT is a messaging protocol and various platforms work with it so
 creating a load with MQTT creates a way for testing platforms.
 
+LG has an executable version that you can run on your system with ease.
+Besides, it has a server version that has APIs that are listed [here](https://app.swaggerhub.com/apis/I1820/i1820-lg/1.0.0).
+
 ## Transport
 LG have an awesome way for customizing portocol named `Transport`.
 Transports give you a way for sending your generated data over your protocol with ease.
