@@ -59,7 +59,7 @@ func App() *buffalo.App {
 		// swagger ui
 		app.ServeFiles("/swagger", http.Dir("swagger"))
 		app.GET("/about", AboutHandler)
-		app.Mount("/socket.io/", sio) // handles the socket io
+		app.Muxer().Handle("/socket.io/", sio) // handles the socket io
 		api := app.Group("/api")
 		{
 			api.Resource("/instances", InstancesResource{})
