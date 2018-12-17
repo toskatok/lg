@@ -51,6 +51,11 @@ func (v InstancesResource) Create(c buffalo.Context) error {
 	}
 	var config models.Config = req.Config
 
+	// check for duplicate name
+	if _, ok := instances[req.Name]; ok {
+		return c.Error(http.StatusBadRequest, fmt.Errorf("Duplicate name"))
+	}
+
 	rate, err := time.ParseDuration(c.Param("rate"))
 	if err != nil {
 		rate = 1 * time.Millisecond
@@ -66,7 +71,10 @@ func (v InstancesResource) Create(c buffalo.Context) error {
 	}
 	i.Run()
 	go func() {
-		socket.BroadcastTo("I1820", req.Name, i.R.Count())
+		for {
+			time.Sleep(1 * time.Second)
+			socket.BroadcastTo("I1820", req.Name, i.R.Count())
+		}
 	}()
 	instances[req.Name] = i
 
