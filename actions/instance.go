@@ -84,6 +84,7 @@ func (v InstancesResource) Destroy(c buffalo.Context) error {
 	id := c.Param("instance_id")
 	i := instances[id]
 	i.Stop()
+	delete(instances, id)
 
 	return c.Render(http.StatusOK, r.JSON(true))
 }
