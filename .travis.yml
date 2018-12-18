@@ -2,9 +2,7 @@ language: go
 go:
   - "1.11"
 
-env:
-  global:
-    - secure: iem+gDaRmNtbakqF2UeMp73JOc6f535AGdw6B2oHIERT1pcrjTKqxEDykPMSqDEevVcpXu0MU1Z9YQzc41g7GK3QPG8tF1RJEBZOzmFGiT6PhoVoPUNWqrB0AKnc3L9gc+vhs2O2y0hN9M71ArseqxjzAePMI6yfmOl/WR7S/Er53vkkBMuLHIw+s1FMCeZ7I8U261ipGac8OuM+HsJ+IOfSHlErFeey0b2I9l5waGUEIXu408KeRU6UE1Qy8LN2jExG7Sexc9zqzKzhyjmbf6w25do7oszvwxxzDGB94SfysVqKjtFYPfa3svrWH3OxKlpCCguNDkpd3VWwwZcp3gQBVoAgT0+nLVamWnKLyOGRWketzGzAuCqLsdHLilkBGH5Sp//4Nu2mVjz6Nd/e9qWi3YCDjgyfki+s+JmWg3Ku9621yCPCDWZw1//CbLsAKCHRr/o8QwLFlWA52ydvG5EI0L04B7NJbTKntzDPOgiUZiRr5JD1UiW9Hv53pfWaTvmMS7b3JgjiXxmp1CHA8wnJGFuFnkZYbW2/PIXdQeWj3BdfEM4ZkAzWy/X5O+JJRNhgyaYca8AAFSg1rXoANrWYjoDY57oRwQAjraFmj260kgmcemQuDSHi37DJ5V7p/YjLuDSTQyv45FJuVDa60Xzd6ZblcQ2N/9ocDt8kc5o=
+# please note that GITHUB_TOKEN which is required by goreleaser is defined in travis website.
 
 before_install:
   # Setup some env variables
