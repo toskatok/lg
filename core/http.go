@@ -16,7 +16,7 @@ package core
 import (
 	"fmt"
 
-	"github.com/go-resty/resty"
+	resty "gopkg.in/resty.v1"
 )
 
 // HTTPTransport implements transport interface for http/https protocol
