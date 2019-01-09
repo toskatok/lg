@@ -5,19 +5,15 @@ go:
 # please note that GITHUB_TOKEN which is required by goreleaser is defined in travis website.
 
 before_install:
-  # Setup some env variables
-  - GO_FILES=$(find . -iname '*.go' )  # All the .go files
   - PKGS=$(go list ./... )             # All the import paths
-
-  # Setup dependency management tool
-  - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 
   # Install linters
   - go get -u golang.org/x/lint/golint              # Linter
   - go get -u github.com/kisielk/errcheck           # errcheck checks that you checked errors.
 
 install:
-  - dep ensure
+  - go mod tidy
+  - go mod download
 
 script:
   - go vet -v $PKGS                   # go vet is the official Go static analyzer
@@ -25,8 +21,6 @@ script:
   - golint -set_exit_status $PKGS     # One last linter
 
 # calls goreleaser
-before_deploy:
-  - git checkout Gopkg.lock
 deploy:
   - provider: script
     skip_cleanup: true
