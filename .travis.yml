@@ -2,6 +2,8 @@ language: go
 go:
   - "1.11"
 
+env:
+  - GO111MODULE: on
 # please note that GITHUB_TOKEN which is required by goreleaser is defined in travis website.
 
 before_install:
