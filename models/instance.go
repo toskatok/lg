@@ -91,6 +91,13 @@ func NewInstance(config Config, rate time.Duration, destination string) (*Instan
 			return nil, err
 		}
 		instance.G = ttn
+	case "lora": // generators/lora.go
+		var lora generators.LoRaGenerator
+		// load genrator information from configuration file
+		if err := mapstructure.Decode(config.Generator.Info, &lora); err != nil {
+			return nil, err
+		}
+		instance.G = lora
 	default:
 		return nil, fmt.Errorf("Generator %s is not supported yet", config.Generator.Name)
 	}
