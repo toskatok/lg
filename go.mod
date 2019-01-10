@@ -7,6 +7,7 @@ require (
 	github.com/I1820/lg v1.0.0
 	github.com/ajg/form v0.0.0-20160822230020-523a5da1a92f
 	github.com/blang/semver v3.5.1+incompatible
+	github.com/brocaar/lorawan v0.0.0-20190109123247-f0f21411298d // indirect
 	github.com/cockroachdb/cockroach-go v0.0.0-20181001143604-e0a95dfd547c
 	github.com/davecgh/go-spew v1.1.1
 	github.com/dustin/go-humanize v1.0.0
@@ -51,6 +52,7 @@ require (
 	github.com/hashicorp/hcl v1.0.0
 	github.com/inconshreveable/mousetrap v1.0.0
 	github.com/jackc/pgx v3.3.0+incompatible
+	github.com/jacobsa/crypto v0.0.0-20180924003735-d95898ceee07 // indirect
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/joho/godotenv v1.3.0
 	github.com/karrick/godirwalk v1.7.7
