@@ -1,0 +1,25 @@
+generator:
+  name: isrc
+  info:
+    gateway:
+      mac: "b827ebffff70c80a"
+    keys:
+      networkSkey: "DB56B6C3002A4763A79E64573C629D97"
+      applicationSKey: "94B49CD7BC621BC46571D019640804AA"
+    device:
+      addr: "26011CF6"
+messages:
+  - 100: 6750
+    101: 6606
+    lat: 10
+    lng: 10
+    count: "{{.Count}}"
+  - "rand": "{{randn 10}}"
+    "time": "{{now}}"
+    "count": "{{.Count}}"
+  - "100": 7000
+    "101": 6606
+    "count": "{{.Count}}"
+  - "100": 6500
+    "101": 6606
+    "count": "{{.Count}}"
