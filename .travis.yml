@@ -23,6 +23,8 @@ script:
   - golint -set_exit_status $PKGS     # One last linter
 
 # calls goreleaser
+before_deploy:
+  - git checkout go.sum go.mod
 deploy:
   - provider: script
     skip_cleanup: true
