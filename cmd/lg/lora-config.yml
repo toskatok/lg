@@ -1,5 +1,5 @@
 generator:
-  name: isrc
+  name: lora
   info:
     gateway:
       mac: "b827ebffff70c80a"
