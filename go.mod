@@ -7,7 +7,7 @@ require (
 	github.com/I1820/lg v1.0.0
 	github.com/ajg/form v0.0.0-20160822230020-523a5da1a92f
 	github.com/blang/semver v3.5.1+incompatible
-	github.com/brocaar/lorawan v0.0.0-20190109123247-f0f21411298d // indirect
+	github.com/brocaar/lorawan v0.0.0-20190109123247-f0f21411298d
 	github.com/cockroachdb/cockroach-go v0.0.0-20181001143604-e0a95dfd547c
 	github.com/davecgh/go-spew v1.1.1
 	github.com/dustin/go-humanize v1.0.0
