@@ -13,7 +13,7 @@
 
 package actions
 
-import "github.com/I1820/lg/models"
+import "github.com/toskatok/lg/models"
 
 func (as *ActionSuite) Test_InstancesResource_Create() {
 	var t bool
