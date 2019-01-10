@@ -13,7 +13,7 @@
 
 package models
 
-// Config is a configuration structure for I1820/lg
+// Config is a configuration structure for toskatok/lg
 type Config struct {
 	Generator struct {
 		Name string

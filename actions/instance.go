@@ -18,8 +18,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/I1820/lg/models"
 	"github.com/gobuffalo/buffalo"
+	"github.com/toskatok/lg/models"
 )
 
 // instance creation request

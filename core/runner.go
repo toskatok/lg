@@ -20,7 +20,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/I1820/lg/generators"
+	"github.com/toskatok/lg/generators"
 )
 
 // Pick is called in order to pickup a data for generate method

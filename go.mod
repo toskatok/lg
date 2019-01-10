@@ -1,9 +1,10 @@
-module github.com/I1820/lg
+module github.com/toskatok/lg
 
 require (
 	dmitri.shuralyov.com/text/kebabcase v0.0.0-20180217051803-40e40b42552a
 	github.com/2tvenom/cbor v0.0.0-20171016170723-384e799bd841
 	github.com/BurntSushi/toml v0.3.1
+	github.com/I1820/lg v1.0.0
 	github.com/ajg/form v0.0.0-20160822230020-523a5da1a92f
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/cockroachdb/cockroach-go v0.0.0-20181001143604-e0a95dfd547c

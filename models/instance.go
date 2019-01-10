@@ -20,9 +20,9 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/I1820/lg/core"
-	"github.com/I1820/lg/generators"
 	"github.com/mitchellh/mapstructure"
+	"github.com/toskatok/lg/core"
+	"github.com/toskatok/lg/generators"
 )
 
 // Instance represents a load generator instance. Each instance has a runner with

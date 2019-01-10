@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/I1820/lg/actions"
+	"github.com/toskatok/lg/actions"
 )
 
 func main() {

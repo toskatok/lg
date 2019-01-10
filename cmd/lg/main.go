@@ -20,8 +20,8 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/I1820/lg/models"
 	"github.com/spf13/viper"
+	"github.com/toskatok/lg/models"
 	"github.com/urfave/cli"
 )
 
