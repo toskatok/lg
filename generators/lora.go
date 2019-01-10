@@ -38,24 +38,33 @@ type LoRaGenerator struct {
 	} `mapstructure:"device"`
 }
 
-// RxRawInfo is an infomation that is comming from the gateway
-type RxRawInfo struct {
-	GatewayID []byte
-	Rssi      int
-	LoRaSNR   int
+// DataRate contains information that gateway collects about packet data rate.
+type DataRate struct {
+	Modulation   string
+	Bandwidth    int
+	SpreadFactor int
 }
 
-// TxRawInfo is an infomation that is comming from the gateway
-type TxRawInfo struct {
-	Frequency  int
-	Modulation string
+// RxRawInfo is an infomation that is comming from the gateway
+type RxRawInfo struct {
+	Board     int
+	Antenna   int
+	Channel   int
+	CodeRate  string
+	CrcStatus int
+	DataRate  DataRate
+	Frequency int
+	LoRaSNR   int
+	Mac       string
+	RfChain   int
+	Rssi      int
+	Size      int
 }
 
 // RxPacket is a packet that is sent to the loraserver.io based on
-// https://www.loraserver.io/lora-gateway-bridge/use/data/<Paste>
+// https://www.loraserver.io/lora-gateway-bridge/use/data/
 type RxPacket struct {
 	PhyPayload []byte
-	TxInfo     TxRawInfo
 	RxInfo     RxRawInfo
 }
 
@@ -138,22 +147,25 @@ func (g LoRaGenerator) Generate(input interface{}) ([]byte, error) {
 		return nil, err
 	}
 
-	// converts gateway mac to 16 byte
-	mac, err := hex.DecodeString(g.Gateway.Mac)
-	if err != nil {
-		return nil, err
-	}
-
 	// lora message
 	message, err := json.Marshal(RxPacket{
 		RxInfo: RxRawInfo{
-			GatewayID: mac,
+			Board:     0,
+			Antenna:   0,
+			Channel:   1,
+			CodeRate:  "4/5",
+			CrcStatus: 1,
+			DataRate: DataRate{
+				Bandwidth:    125,
+				Modulation:   "LORA",
+				SpreadFactor: 7,
+			},
+			Frequency: 868300000,
+			LoRaSNR:   7,
+			Mac:       g.Gateway.Mac,
+			RfChain:   1,
 			Rssi:      -57,
-			LoRaSNR:   10,
-		},
-		TxInfo: TxRawInfo{
-			Frequency:  868100000,
-			Modulation: "LORA",
+			Size:      23,
 		},
 		PhyPayload: phyBytes,
 	})
