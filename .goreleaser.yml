@@ -2,11 +2,11 @@ project_name: lg
 
 release:
   github:
-    owner: I1820
+    owner: toskatok
     name: lg
 
 builds:
-  - binary: gosimac
+  - binary: lg
     goos:
       - linux
       - darwin
