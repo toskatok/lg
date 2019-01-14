@@ -38,7 +38,48 @@ If your destination has scheme `http://` your transport will be HTTP
 and if it has `mqtt://` your transport will be MQTT.
 
 ## Use Cases :male_detective:
-### Set I1820 on fire
+### Set [loraserver.io](https://www.loraserver.io/) on fire
+### ABP
+With this load generator, we try to put a load on loraserver.io
+and we get the following results.
+
+```yml
+generator:
+  name: lora
+  info:
+    gateway:
+      mac: "b827ebffff70c80a"
+    keys:
+      networkSkey: "DB56B6C3002A4763A79E64573C629D97"
+      applicationSKey: "94B49CD7BC621BC46571D019640804AA"
+    device:
+      addr: "26011CF6"
+messages:
+  - 100: 6750
+    101: 6606
+    lat: 10
+    lng: 10
+    count: "{{.Count}}"
+  - "rand": "{{randn 10}}"
+    "time": "{{now}}"
+    "count": "{{.Count}}"
+  - "100": 7000
+    "101": 6606
+    "count": "{{.Count}}"
+  - "100": 6500
+    "101": 6606
+    "count": "{{.Count}}"
+```
+
+| Interval | Status        |
+|:---------|:-------------:|
+| 1s       | Success       |
+| 100ms    | Success       |
+| 10ms     | Success       |
+| 1ms      | Fail          |
+
+
+### Set [I1820](https://i1820.org) on fire
 #### TTN (over HTTP)
 With this load generator, we try to put a load on I1820 TTN Integration module in link component
 and we get the following results.
