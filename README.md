@@ -59,16 +59,6 @@ messages:
     101: 6606
     lat: 10
     lng: 10
-    count: "{{.Count}}"
-  - "rand": "{{randn 10}}"
-    "time": "{{now}}"
-    "count": "{{.Count}}"
-  - "100": 7000
-    "101": 6606
-    "count": "{{.Count}}"
-  - "100": 6500
-    "101": 6606
-    "count": "{{.Count}}"
 ```
 
 | Interval | Status        |
