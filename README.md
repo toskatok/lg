@@ -1,4 +1,4 @@
-# MQTT Load Generator :fire:
+# IoT Load Generator :fire:
 
 [![Travis branch](https://img.shields.io/travis/com/toskatok/lg/master.svg?style=flat-square)](https://travis-ci.com/toskatok/lg)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/b6019269d2cf4b11897acd4340e78bdc)](https://www.codacy.com/app/toskatok/lg?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=I1820/lg&amp;utm_campaign=Badge_Grade)
@@ -9,7 +9,7 @@
 ## Introduction
 This application gives a way for creating a load with MQTT, HTTP ...
 MQTT is a messaging protocol and various platforms work with it so
-creating a load with MQTT creates a way for testing platforms.
+creating a load with MQTT creates a way for testing different platforms.
 
 LG has an executable version that you can run on your system with ease.
 Besides, it has a server version which has APIs that are listed [here](https://app.swaggerhub.com/apis/I1820/i1820-lg/1.0.0).
@@ -19,25 +19,27 @@ with an event that has the name of its instance.
 
 ## Transport
 LG have an awesome way for customizing portocol named `Transport`.
-Transports give you a way for sending your generated data over your protocol with ease.
+Transports give you a way for sending your generated data over *your protocol* with ease.
 
 ## Generator
 LG is fully customizable so you can generate data with
 your own structure and publish it on your own topic.
-For this LG has the `Generator` interface is defined in `generator/`.
+For this LG has the `Generator` interface that is defined in `generator/`.
 
 ## Running
-You can run LG with following syntax:
+You can run LG execuable version with following syntax:
 
 ```sh
 lg --destination http://127.0.0.1:1883 --rate 1ms
 ```
 
-In `config.yml` you can specifies generator configuration. If your destination has scheme `http://` your transport is HTTP
-and if it has `mqtt://` your transport is MQTT.
+In `config.yml` you can specifies generator configuration.
+If your destination has scheme `http://` your transport will be HTTP
+and if it has `mqtt://` your transport will be MQTT.
 
-## Set I1820 on fire
-### TTN (over HTTP)
+## Use Cases
+### Set I1820 on fire
+#### TTN (over HTTP)
 With this load generator, we try to put a load on I1820 TTN Integration module in link component
 and we get the following results.
 
@@ -69,7 +71,7 @@ with send interval of data:
 Please consider that HTTP requests cannot get their response in `100us` or lower interval so in these intervals there is no
 difference with `1ms` interval.
 
-### Fanco (over MQTT)
+#### Fanco (over MQTT)
 With this load generator, we try to put a load on I1820 MQTT service in link component
 and we get the following results.
 
@@ -95,7 +97,7 @@ with send interval of data:
 | 100us    | 52.3809524%   |
 | 10us     | 47.6190476%   |
 
-### Test System
+#### Test System Specification
 
 - 4 Core Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz
 - 8 Gb of RAM
