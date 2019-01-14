@@ -3,6 +3,7 @@ module github.com/toskatok/lg
 require (
 	github.com/2tvenom/cbor v0.0.0-20171016170723-384e799bd841
 	github.com/brocaar/lorawan v0.0.0-20190109123247-f0f21411298d
+	github.com/fatih/color v1.7.0
 	github.com/go-playground/locales v0.12.1 // indirect
 	github.com/go-playground/universal-translator v0.16.0 // indirect
 	github.com/gobuffalo/buffalo v0.13.12
