@@ -20,6 +20,7 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/fatih/color"
 	"github.com/spf13/viper"
 	"github.com/toskatok/lg/models"
 	"github.com/urfave/cli"
@@ -67,10 +68,10 @@ func main() {
 				return err
 			}
 
-			// print generator information
-			fmt.Println(">>> Generator")
-			fmt.Printf("%+v\n", i.G)
-			fmt.Println(">>>")
+			// prints generator information
+			color.Blue(">>> Generator")
+			color.Yellow("%+v\n", i.G)
+			color.Blue(">>>")
 
 			// runs the instance
 			i.Run()
@@ -79,7 +80,11 @@ func main() {
 			go func() {
 				for {
 					time.Sleep(1 * time.Second)
-					fmt.Printf("%s -> %d\n", config.Generator.Name, i.R.Count())
+
+					fmt.Print(color.CyanString("%s", config.Generator.Name))
+					fmt.Print(color.GreenString(" -> generates"))
+					fmt.Print(color.CyanString(" %d ", i.R.Count()))
+					fmt.Print(color.GreenString("number of packets\n"))
 				}
 			}()
 
@@ -89,7 +94,7 @@ func main() {
 
 			<-sigc
 			i.Stop()
-			fmt.Printf("Total packets send to %s: %d\n", config.Generator.Name, i.R.Count())
+			color.HiRed("Total packets send to %s: %d\n", config.Generator.Name, i.R.Count())
 
 			return nil
 		},
