@@ -37,7 +37,7 @@ In `config.yml` you can specifies generator configuration.
 If your destination has scheme `http://` your transport will be HTTP
 and if it has `mqtt://` your transport will be MQTT.
 
-## Use Cases
+## Use Cases :male_detective:
 ### Set I1820 on fire
 #### TTN (over HTTP)
 With this load generator, we try to put a load on I1820 TTN Integration module in link component
