@@ -102,12 +102,12 @@ func (r *Runner) Stop() {
 
 // Run runs the runner :joy:
 func (r *Runner) Run() {
-	sendTick := time.Tick(r.duration)
+	ticker := time.NewTicker(r.duration)
 
 	go func() {
 		for {
 			select {
-			case <-sendTick:
+			case <-ticker.C:
 				message, err := r.generator.Generate(r.pick())
 				if err != nil {
 					log.Printf("Generator Generate: %s", err)
@@ -124,6 +124,7 @@ func (r *Runner) Run() {
 				r.counter++
 				r.lck.Unlock()
 			case <-r.stop:
+				ticker.Stop()
 				return
 			}
 		}
