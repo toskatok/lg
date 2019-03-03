@@ -1,6 +1,7 @@
 # IoT Load Generator :fire:
 
 [![Travis branch](https://img.shields.io/travis/com/toskatok/lg/master.svg?style=flat-square)](https://travis-ci.com/toskatok/lg)
+[![GolangCI](https://golangci.com/badges/github.com/toskatok/lg.svg)](https://golangci.com)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/b6019269d2cf4b11897acd4340e78bdc)](https://www.codacy.com/app/toskatok/lg?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=I1820/lg&amp;utm_campaign=Badge_Grade)
 [![GoReleaser](https://img.shields.io/badge/powered%20by-goreleaser-green.svg?style=flat-square)](https://github.com/goreleaser)
 
