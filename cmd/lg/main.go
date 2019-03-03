@@ -90,7 +90,7 @@ func main() {
 
 			// Set up channel on which to send signal notifications.
 			sigc := make(chan os.Signal, 1)
-			signal.Notify(sigc, os.Interrupt, os.Kill)
+			signal.Notify(sigc, os.Interrupt)
 
 			<-sigc
 			i.Stop()
