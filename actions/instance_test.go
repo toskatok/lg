@@ -23,7 +23,7 @@ func (as *ActionSuite) Test_InstancesResource_Create() {
 	config.Generator.Name = "ttn"
 	config.Token = "ttnIStheBEST"
 	config.Messages = []map[string]interface{}{
-		map[string]interface{}{
+		{
 			"101": 6000,
 			"100": 6500,
 		},

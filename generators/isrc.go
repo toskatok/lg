@@ -90,7 +90,7 @@ func (g ISRCGenerator) Generate(input interface{}) ([]byte, error) {
 		FPort:           5,
 		FCnt:            10,
 		RxInfo: []RxInfo{
-			RxInfo{
+			{
 				Mac:     g.GatewayMac,
 				Name:    fmt.Sprintf("gateway-%s", g.GatewayMac),
 				Time:    time.Now(),

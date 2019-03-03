@@ -45,7 +45,7 @@ func main() {
 		Name:        "MQTT-LG",
 		Description: "MQTT based Load Generator",
 		Authors: []cli.Author{
-			cli.Author{
+			{
 				Name:  "Parham Alvani",
 				Email: "parham.alvani@gmail.com",
 			},
