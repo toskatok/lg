@@ -36,7 +36,7 @@ type RxMessage struct {
 	Data            []byte
 }
 
-// RxInfo contains reception infomation of a lara gateway that
+// RxInfo contains reception information of a lara gateway that
 // payload is received from it.
 type RxInfo struct {
 	Mac     string

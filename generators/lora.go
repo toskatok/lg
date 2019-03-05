@@ -45,7 +45,7 @@ type DataRate struct {
 	SpreadFactor int
 }
 
-// RxRawInfo is an infomation that is comming from the gateway
+// RxRawInfo is an information that is comming from the gateway
 type RxRawInfo struct {
 	Board     int
 	Antenna   int
