@@ -1,0 +1,7 @@
+generator:
+  name: json
+  info:
+    name: ride
+token: -
+messages:
+  - count: "{{.Count}}"
