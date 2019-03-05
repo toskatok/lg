@@ -69,6 +69,8 @@ func NewRunner(config RunnerConfig) (Runner, error) {
 		t = &HTTPTransport{}
 	case "mqtt":
 		t = &MQTTTransport{}
+	case "kafka":
+		t = &KafkaTransport{}
 	default:
 		return Runner{}, fmt.Errorf("Scheme %s is not supported yet", url.Scheme)
 	}
