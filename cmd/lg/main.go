@@ -26,10 +26,10 @@ import (
 	"github.com/urfave/cli"
 )
 
-// config variable contains current user configuration
-var config models.Config
-
 func main() {
+	// config variable contains current user configuration
+	var config models.Config
+
 	viper.SetConfigName("config") // name of config file (without extension)
 	viper.AddConfigPath(".")      // looking for config in the working directory
 
