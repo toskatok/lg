@@ -13,11 +13,16 @@
 
 package actions
 
-import "github.com/toskatok/lg/models"
+import (
+	"bytes"
+	"encoding/json"
+	"net/http"
+	"net/http/httptest"
 
-func (as *ActionSuite) Test_InstancesResource_Create() {
-	var t bool
+	"github.com/toskatok/lg/models"
+)
 
+func (suite *LGTestSuite) Test_InstancesResource_Create() {
 	// KJ Configurations
 	var config models.Config
 	config.Generator.Name = "ttn"
@@ -29,12 +34,16 @@ func (as *ActionSuite) Test_InstancesResource_Create() {
 		},
 	}
 
-	// creates new instance
-	res := as.JSON("/api/instances").Post(instanceReq{
+	w := httptest.NewRecorder()
+	data, err := json.Marshal(instanceReq{
 		Name:   "The whom was not given",
 		Config: config,
 	})
-	as.Equalf(200, res.Code, "Error: %s", res.Body.String())
-	res.Bind(&t)
-	as.Equal(t, true)
+	suite.NoError(err)
+	req, err := http.NewRequest("POST", "/api/instances", bytes.NewReader(data))
+	suite.NoError(err)
+	suite.engine.ServeHTTP(w, req)
+
+	suite.Equal(200, w.Code)
+	suite.Contains(w.Body.String(), true)
 }
