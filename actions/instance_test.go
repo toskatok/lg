@@ -23,6 +23,8 @@ import (
 )
 
 func (suite *LGTestSuite) Test_InstancesResource_Create() {
+	var t bool
+
 	// KJ Configurations
 	var config models.Config
 	config.Generator.Name = "ttn"
@@ -34,16 +36,26 @@ func (suite *LGTestSuite) Test_InstancesResource_Create() {
 		},
 	}
 
-	w := httptest.NewRecorder()
+	cw := httptest.NewRecorder()
 	data, err := json.Marshal(instanceReq{
-		Name:   "The whom was not given",
+		Name:   "kj",
 		Config: config,
 	})
 	suite.NoError(err)
-	req, err := http.NewRequest("POST", "/api/instances", bytes.NewReader(data))
+	creq, err := http.NewRequest("POST", "/api/instances", bytes.NewReader(data))
 	suite.NoError(err)
-	suite.engine.ServeHTTP(w, req)
+	suite.engine.ServeHTTP(cw, creq)
 
-	suite.Equal(200, w.Code)
-	suite.Contains(w.Body.String(), true)
+	suite.Equal(200, cw.Code)
+	suite.NoError(json.Unmarshal(cw.Body.Bytes(), &t))
+	suite.Equal(t, true)
+
+	dw := httptest.NewRecorder()
+	dreq, err := http.NewRequest("DELETE", "/api/instances/kj", nil)
+	suite.NoError(err)
+	suite.engine.ServeHTTP(dw, dreq)
+
+	suite.Equal(200, dw.Code)
+	suite.NoError(json.Unmarshal(dw.Body.Bytes(), &t))
+	suite.Equal(t, true)
 }
