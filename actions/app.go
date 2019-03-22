@@ -23,8 +23,8 @@ func App() *echo.Echo {
 		ih := NewInstancesHandler()
 		api.POST("/instances", ih.Create)
 		api.GET("/instances", ih.List)
-		api.DELETE("/instances/:id", ih.Destroy)
-		api.GET("/instances/:id", ih.Show)
+		api.DELETE("/instances/:instance_id", ih.Destroy)
+		api.GET("/instances/:instance_id", ih.Show)
 	}
 
 	return app
