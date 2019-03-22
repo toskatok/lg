@@ -19,6 +19,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 
+	"github.com/labstack/echo/v4"
 	"github.com/toskatok/lg/models"
 )
 
@@ -44,6 +45,7 @@ func (suite *LGTestSuite) Test_InstancesResource_Create() {
 	suite.NoError(err)
 	creq, err := http.NewRequest("POST", "/api/instances", bytes.NewReader(data))
 	suite.NoError(err)
+	creq.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	suite.engine.ServeHTTP(cw, creq)
 
 	suite.Equal(200, cw.Code)
