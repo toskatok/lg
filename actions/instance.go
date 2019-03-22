@@ -18,7 +18,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/gobuffalo/buffalo"
+	"github.com/labstack/echo/v4"
 	"github.com/toskatok/lg/models"
 )
 
@@ -28,32 +28,43 @@ type instanceReq struct {
 	models.Config
 }
 
-// list of the running instances
-var instances map[string]*models.Instance = make(map[string]*models.Instance)
+// InstancesHandler manages instances of load generators.
+type InstancesHandler struct {
+	// list of the running instances
+	instances map[string]*models.Instance
+}
 
-// InstancesResource manages instances of load generators.
-type InstancesResource struct {
-	buffalo.Resource
+// NewInstancesHandler creates new instance of load generator instances handler
+func NewInstancesHandler() *InstancesHandler {
+	return &InstancesHandler{
+		instances: make(map[string]*models.Instance),
+	}
 }
 
 // List returns all running instances This function is mapped
 // to the path GET /instances
-func (v InstancesResource) List(c buffalo.Context) error {
-	return c.Render(http.StatusOK, r.JSON(instances))
+func (v *InstancesHandler) List(c echo.Context) error {
+	return c.JSON(http.StatusOK, v.instances)
 }
 
 // Create runs new generator instance. This function is mapped
 // to the path POST /instances
-func (v InstancesResource) Create(c buffalo.Context) error {
+func (v *InstancesHandler) Create(c echo.Context) error {
 	var req instanceReq
+
 	if err := c.Bind(&req); err != nil {
-		return c.Error(http.StatusBadRequest, err)
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
+
+	if err := c.Validate(req); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
 	var config models.Config = req.Config
 
 	// check for duplicate name
-	if _, ok := instances[req.Name]; ok {
-		return c.Error(http.StatusBadRequest, fmt.Errorf("Duplicate name"))
+	if _, ok := v.instances[req.Name]; ok {
+		return echo.NewHTTPError(http.StatusBadRequest, "Duplicate name")
 	}
 
 	rate, err := time.ParseDuration(c.Param("rate"))
@@ -65,45 +76,40 @@ func (v InstancesResource) Create(c buffalo.Context) error {
 		destination = "mqtt://127.0.0.1:1883"
 	}
 
+	// create and run newly created instance
 	i, err := models.NewInstance(config, rate, destination)
 	if err != nil {
-		return c.Error(http.StatusInternalServerError, err)
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 	i.Run()
-	go func() {
-		for {
-			time.Sleep(1 * time.Second)
-			socket.BroadcastTo("I1820", req.Name, i.R.Count())
-		}
-	}()
-	instances[req.Name] = i
+	v.instances[req.Name] = i
 
-	return c.Render(http.StatusOK, r.JSON(true))
+	return c.JSON(http.StatusOK, true)
 }
 
 // Show shows the detail of given instance. This function is mapped
 // to the path GET /instances/{instance_id}
-func (v InstancesResource) Show(c buffalo.Context) error {
+func (v *InstancesHandler) Show(c echo.Context) error {
 	id := c.Param("instance_id")
-	i, ok := instances[id]
+	i, ok := v.instances[id]
 	if !ok {
-		return c.Error(http.StatusNotFound, fmt.Errorf("There is no instnace with name %s", id))
+		return echo.NewHTTPError(http.StatusNotFound, fmt.Sprintf("There is no instnace with name %s", id))
 	}
 
-	return c.Render(http.StatusOK, r.JSON(i.R.Count()))
+	return c.JSON(http.StatusOK, i.R.Count())
 }
 
 // Destroy stops given instance and removes it from the instances list.
 // This function is mapped to the path DELETE /instances/{instance_id}
-func (v InstancesResource) Destroy(c buffalo.Context) error {
+func (v *InstancesHandler) Destroy(c echo.Context) error {
 	id := c.Param("instance_id")
-	i, ok := instances[id]
+	i, ok := v.instances[id]
 	if !ok {
-		return c.Error(http.StatusNotFound, fmt.Errorf("There is no instnace with name %s", id))
+		return echo.NewHTTPError(http.StatusNotFound, fmt.Sprintf("There is no instnace with name %s", id))
 	}
 
 	i.Stop()
-	delete(instances, id)
+	delete(v.instances, id)
 
-	return c.Render(http.StatusOK, r.JSON(true))
+	return c.JSON(http.StatusOK, true)
 }
