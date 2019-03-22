@@ -32,7 +32,7 @@ func (g AtrovanGenerator) Generate(input interface{}) ([]byte, error) {
 	// input into json
 	states, ok := input.(map[string]interface{})
 	if !ok {
-		return nil, fmt.Errorf("Input must be a map between strings and values")
+		return nil, fmt.Errorf("input must be a map between strings and values")
 	}
 
 	message, err := json.Marshal(states)

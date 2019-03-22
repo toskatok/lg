@@ -72,7 +72,7 @@ func NewRunner(config RunnerConfig) (Runner, error) {
 	case "kafka":
 		t = &KafkaTransport{}
 	default:
-		return Runner{}, fmt.Errorf("Scheme %s is not supported yet", url.Scheme)
+		return Runner{}, fmt.Errorf("scheme %s is not supported yet", url.Scheme)
 	}
 	if err := t.Init(url.Host, config.Token); err != nil {
 		return Runner{}, err

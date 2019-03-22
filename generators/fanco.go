@@ -37,7 +37,7 @@ func (g FancoGenerator) Generate(input interface{}) ([]byte, error) {
 	// convert given input into json
 	values, ok := input.(map[string]interface{})
 	if !ok {
-		return nil, fmt.Errorf("Input must be a map between strings and values")
+		return nil, fmt.Errorf("input must be a map between strings and values")
 	}
 
 	// allthingstalk state format

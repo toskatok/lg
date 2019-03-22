@@ -106,7 +106,7 @@ func NewInstance(config Config, rate time.Duration, destination string) (*Instan
 		}
 		instance.G = json
 	default:
-		return nil, fmt.Errorf("Generator %s is not supported yet", config.Generator.Name)
+		return nil, fmt.Errorf("generator %s is not supported yet", config.Generator.Name)
 	}
 
 	// Runner creation

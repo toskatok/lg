@@ -45,7 +45,7 @@ type DataRate struct {
 	SpreadFactor int
 }
 
-// RxRawInfo is an information that is comming from the gateway
+// RxRawInfo is an information that is coming from the gateway
 type RxRawInfo struct {
 	Board     int
 	Antenna   int
@@ -88,14 +88,14 @@ func (g LoRaGenerator) Generate(input interface{}) ([]byte, error) {
 		return nil, err
 	}
 	var appSKey lorawan.AES128Key
-	copy(appSKey[:], appSKeySlice[:])
+	copy(appSKey[:], appSKeySlice)
 
 	nwkSKeySlice, err := hex.DecodeString(g.Keys.NetworkSKey)
 	if err != nil {
 		return nil, err
 	}
 	var nwkSKey lorawan.AES128Key
-	copy(nwkSKey[:], nwkSKeySlice[:])
+	copy(nwkSKey[:], nwkSKeySlice)
 
 	// converts device addr into DevAddr
 	devAddrSlice, err := hex.DecodeString(g.Device.Addr)
@@ -103,7 +103,7 @@ func (g LoRaGenerator) Generate(input interface{}) ([]byte, error) {
 		return nil, err
 	}
 	var devAddr lorawan.DevAddr
-	copy(devAddr[:], devAddrSlice[:])
+	copy(devAddr[:], devAddrSlice)
 
 	// https://godoc.org/github.com/brocaar/lorawan#example-PHYPayload--Lorawan10Encode
 	fport := uint8(5)
