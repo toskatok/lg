@@ -67,11 +67,11 @@ func (v *InstancesHandler) Create(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "Duplicate name")
 	}
 
-	rate, err := time.ParseDuration(c.Param("rate"))
+	rate, err := time.ParseDuration(c.QueryParam("rate"))
 	if err != nil {
 		rate = 1 * time.Millisecond
 	}
-	destination := c.Param("destination")
+	destination := c.QueryParam("destination")
 	if destination == "" {
 		destination = "mqtt://127.0.0.1:1883"
 	}

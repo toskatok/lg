@@ -46,6 +46,8 @@ func (suite *LGTestSuite) Test_InstancesResource_Create() {
 	creq, err := http.NewRequest("POST", "/api/instances", bytes.NewReader(data))
 	suite.NoError(err)
 	creq.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+	creq.URL.Query().Add("destination", "http://127.0.0.1:8080")
+	creq.URL.Query().Add("rate", "1m")
 	suite.engine.ServeHTTP(cw, creq)
 
 	suite.Equal(200, cw.Code)
