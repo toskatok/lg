@@ -9,7 +9,7 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/I1820/wf/actions"
+	"github.com/toskatok/lg/actions"
 )
 
 func main() {
