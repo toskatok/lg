@@ -26,8 +26,8 @@ import (
 	"github.com/urfave/cli"
 )
 
-func main() {
-	// config variable contains current user configuration
+// config loads configuration from file and return it
+func config() models.Config {
 	var config models.Config
 
 	viper.SetConfigName("config") // name of config file (without extension)
@@ -41,9 +41,54 @@ func main() {
 		log.Fatal(err)
 	}
 
+	return config
+}
+
+// action runs a test instance
+func action(c *cli.Context) error {
+	// cfg variable contains current user configuration
+	cfg := config()
+
+	i, err := models.NewInstance(cfg, c.Duration("rate"), c.String("destination"))
+	if err != nil {
+		return err
+	}
+
+	// prints generator information
+	color.Blue(">>> Generator")
+	color.Yellow("%+v\n", i.G)
+	color.Blue(">>>")
+
+	// runs the instance
+	i.Run()
+
+	// prints report in 1 second intervals
+	go func() {
+		for {
+			time.Sleep(1 * time.Second)
+
+			fmt.Print(color.CyanString("%s", cfg.Generator.Name))
+			fmt.Print(color.GreenString(" -> generates"))
+			fmt.Print(color.CyanString(" %d ", i.R.Count()))
+			fmt.Print(color.GreenString("number of packets\n"))
+		}
+	}()
+
+	// Set up channel on which to send signal notifications.
+	sigc := make(chan os.Signal, 1)
+	signal.Notify(sigc, os.Interrupt)
+
+	<-sigc
+	i.Stop()
+	color.HiRed("Total packets send to %s: %d\n", cfg.Generator.Name, i.R.Count())
+
+	return nil
+}
+
+func main() {
 	app := &cli.App{
-		Name:        "MQTT-LG",
-		Description: "MQTT based Load Generator",
+		Name:        "LG",
+		Description: "Load Generator",
 		Authors: []cli.Author{
 			{
 				Name:  "Parham Alvani",
@@ -62,42 +107,7 @@ func main() {
 				Usage: "Send interval",
 			},
 		},
-		Action: func(c *cli.Context) error {
-			i, err := models.NewInstance(config, c.Duration("rate"), c.String("destination"))
-			if err != nil {
-				return err
-			}
-
-			// prints generator information
-			color.Blue(">>> Generator")
-			color.Yellow("%+v\n", i.G)
-			color.Blue(">>>")
-
-			// runs the instance
-			i.Run()
-
-			// prints report in 1 second intervals
-			go func() {
-				for {
-					time.Sleep(1 * time.Second)
-
-					fmt.Print(color.CyanString("%s", config.Generator.Name))
-					fmt.Print(color.GreenString(" -> generates"))
-					fmt.Print(color.CyanString(" %d ", i.R.Count()))
-					fmt.Print(color.GreenString("number of packets\n"))
-				}
-			}()
-
-			// Set up channel on which to send signal notifications.
-			sigc := make(chan os.Signal, 1)
-			signal.Notify(sigc, os.Interrupt)
-
-			<-sigc
-			i.Stop()
-			color.HiRed("Total packets send to %s: %d\n", config.Generator.Name, i.R.Count())
-
-			return nil
-		},
+		Action: action,
 	}
 	if err := app.Run(os.Args); err != nil {
 		log.Fatal(err)
