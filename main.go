@@ -19,7 +19,6 @@ func main() {
 	go func() {
 		if err := e.Start(":8080"); err != http.ErrServerClosed {
 			log.Fatalf("API Service failed with %s", err)
-
 		}
 	}()
 
@@ -33,6 +32,5 @@ func main() {
 	defer cancel()
 	if err := e.Shutdown(ctx); err != nil {
 		log.Printf("API Service failed on exit: %s", err)
-
 	}
 }
