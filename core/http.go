@@ -38,8 +38,10 @@ func (ht *HTTPTransport) Transmit(topic string, data []byte) error {
 	if err != nil {
 		return err
 	}
+
 	if resp.IsError() {
 		return fmt.Errorf("error response: %s", resp.Body())
 	}
+
 	return nil
 }

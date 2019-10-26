@@ -64,6 +64,7 @@ func (g TTNGenerator) Topic() string {
 func (g TTNGenerator) Generate(input interface{}) ([]byte, error) {
 	// input to cbor conversion
 	var buffer bytes.Buffer
+
 	encoder := cbor.NewEncoder(&buffer)
 	if ok, err := encoder.Marshal(input); !ok {
 		return nil, err
@@ -77,6 +78,7 @@ func (g TTNGenerator) Generate(input interface{}) ([]byte, error) {
 		PayloadRaw:     buffer.Bytes(),
 	}
 	request.Metadata.Time = time.Now()
+
 	message, err := json.Marshal(request)
 	if err != nil {
 		return nil, err

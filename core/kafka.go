@@ -34,6 +34,7 @@ func (k *KafkaTransport) Init(url string, token string) error {
 	if err != nil {
 		return err
 	}
+
 	k.producer = sp
 
 	return nil
@@ -46,6 +47,7 @@ func (k *KafkaTransport) Transmit(topic string, data []byte) error {
 		Partition: -1,
 		Value:     sarama.ByteEncoder(data),
 	}
+
 	_, _, err := k.producer.SendMessage(msg)
 	if err != nil {
 		return err

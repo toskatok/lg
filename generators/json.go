@@ -20,5 +20,6 @@ func (g JSONGenerator) Generate(input interface{}) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	return b, nil
 }

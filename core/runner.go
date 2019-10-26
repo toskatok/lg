@@ -60,10 +60,12 @@ type Runner struct {
 func NewRunner(config RunnerConfig) (Runner, error) {
 	// Find and configure the transport
 	var t Transport
+
 	url, err := url.Parse(config.URL)
 	if err != nil {
 		return Runner{}, err
 	}
+
 	switch url.Scheme {
 	case "http", "https":
 		t = &HTTPTransport{}
@@ -74,6 +76,7 @@ func NewRunner(config RunnerConfig) (Runner, error) {
 	default:
 		return Runner{}, fmt.Errorf("scheme %s is not supported yet", url.Scheme)
 	}
+
 	if err := t.Init(url.Host, config.Token); err != nil {
 		return Runner{}, err
 	}
@@ -94,6 +97,7 @@ func NewRunner(config RunnerConfig) (Runner, error) {
 func (r *Runner) Count() int64 {
 	r.lck.RLock()
 	defer r.lck.RUnlock()
+
 	return r.counter
 }
 

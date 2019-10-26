@@ -77,6 +77,7 @@ func (g LoRaGenerator) Topic() string {
 func (g LoRaGenerator) Generate(input interface{}) ([]byte, error) {
 	// encodes input with cbor
 	var buffer bytes.Buffer
+
 	encoder := cbor.NewEncoder(&buffer)
 	if ok, err := encoder.Marshal(input); !ok {
 		return nil, err
@@ -87,14 +88,18 @@ func (g LoRaGenerator) Generate(input interface{}) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	var appSKey lorawan.AES128Key
+
 	copy(appSKey[:], appSKeySlice)
 
 	nwkSKeySlice, err := hex.DecodeString(g.Keys.NetworkSKey)
 	if err != nil {
 		return nil, err
 	}
+
 	var nwkSKey lorawan.AES128Key
+
 	copy(nwkSKey[:], nwkSKeySlice)
 
 	// converts device addr into DevAddr
@@ -102,11 +107,14 @@ func (g LoRaGenerator) Generate(input interface{}) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	var devAddr lorawan.DevAddr
+
 	copy(devAddr[:], devAddrSlice)
 
 	// https://godoc.org/github.com/brocaar/lorawan#example-PHYPayload--Lorawan10Encode
 	fport := uint8(5)
+
 	phy := lorawan.PHYPayload{
 		MHDR: lorawan.MHDR{
 			MType: lorawan.UnconfirmedDataUp,
@@ -138,6 +146,7 @@ func (g LoRaGenerator) Generate(input interface{}) ([]byte, error) {
 	if err := phy.EncryptFRMPayload(appSKey); err != nil {
 		return nil, err
 	}
+
 	if err := phy.SetUplinkDataMIC(lorawan.LoRaWAN1_0, 0, 0, 0, nwkSKey, lorawan.AES128Key{}); err != nil {
 		return nil, err
 	}

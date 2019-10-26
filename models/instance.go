@@ -20,7 +20,6 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/mitchellh/mapstructure"
 	"github.com/toskatok/lg/core"
 	"github.com/toskatok/lg/generators"
 )
@@ -56,66 +55,26 @@ func NewInstance(config Config, rate time.Duration, destination string) (*Instan
 				if err != nil {
 					return nil, err
 				}
+
 				d[k] = p
 			}
 		}
 	}
 
-	// Generator selection and configuration
-	switch config.Generator.Name {
-	case "isrc": // generators/isrc.go
-		var isrc generators.ISRCGenerator
-		// load genrator information from configuration file
-		if err := mapstructure.Decode(config.Generator.Info, &isrc); err != nil {
-			return nil, err
-		}
-		instance.G = isrc
-	case "atrovan": // generators/atrovan.go
-		var atrovan generators.AtrovanGenerator
-		// load genrator information from configuration file
-		if err := mapstructure.Decode(config.Generator.Info, &atrovan); err != nil {
-			return nil, err
-		}
-		instance.G = atrovan
-	case "fanco": // generators/fanco.go
-		var fanco generators.FancoGenerator
-		// load genrator information from configuration file
-		if err := mapstructure.Decode(config.Generator.Info, &fanco); err != nil {
-			return nil, err
-		}
-		instance.G = fanco
-	case "ttn": // generators/ttn.go
-		var ttn generators.TTNGenerator
-		// load genrator information from configuration file
-		if err := mapstructure.Decode(config.Generator.Info, &ttn); err != nil {
-			return nil, err
-		}
-		instance.G = ttn
-	case "lora": // generators/lora.go
-		var lora generators.LoRaGenerator
-		// load genrator information from configuration file
-		if err := mapstructure.Decode(config.Generator.Info, &lora); err != nil {
-			return nil, err
-		}
-		instance.G = lora
-	case "json": // generators/json.go
-		var json generators.JSONGenerator
-		// load genrator information from configuration file
-		if err := mapstructure.Decode(config.Generator.Info, &json); err != nil {
-			return nil, err
-		}
-		instance.G = json
-	default:
-		return nil, fmt.Errorf("generator %s is not supported yet", config.Generator.Name)
+	var err error
+
+	instance.G, err = generators.Get(config.Generator.Name, config.Generator.Info)
+	if err != nil {
+		return nil, err
 	}
 
 	// Runner creation
-	var err error
 	instance.R, err = core.NewRunner(core.RunnerConfig{
 		Generator: instance.G,
 		Duration:  rate,
 		Pick: func() interface{} { // runs on each message
 			instance.message.Count++
+
 			d := make(map[string]interface{})
 			for k, v := range config.Messages[rand.Intn(len(config.Messages))] {
 				if tmpl, ok := v.(*template.Template); ok {

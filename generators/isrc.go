@@ -76,6 +76,7 @@ func (g ISRCGenerator) Topic() string {
 func (g ISRCGenerator) Generate(input interface{}) ([]byte, error) {
 	// input into cbor
 	var buffer bytes.Buffer
+
 	encoder := cbor.NewEncoder(&buffer)
 	if ok, err := encoder.Marshal(input); !ok {
 		return nil, err
