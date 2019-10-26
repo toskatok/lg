@@ -26,3 +26,5 @@ require (
 	gopkg.in/go-playground/validator.v9 v9.26.0
 	gopkg.in/resty.v1 v1.11.0
 )
+
+go 1.13
