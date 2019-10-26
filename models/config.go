@@ -13,11 +13,11 @@
 
 package models
 
-// Config is a configuration structure for toskatok/lg
+// Config is a configuration structure for toskatok/lg that can be passed from HTTP or file
 type Config struct {
 	Generator struct {
 		Name string
-		Info interface{} // this structure is not used in config, it is passed to generators
+		Info interface{} // this structure is not used in config, it is passed to generators to configure them
 	}
 	Token    string
 	Messages []map[string]interface{}
