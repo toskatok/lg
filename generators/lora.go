@@ -74,6 +74,7 @@ func (g LoRaGenerator) Topic() string {
 }
 
 // Generate generates lora message by converting input into cbor and encrypts it.
+// nolint: funlen
 func (g LoRaGenerator) Generate(input interface{}) ([]byte, error) {
 	// encodes input with cbor
 	var buffer bytes.Buffer
