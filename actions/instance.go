@@ -64,13 +64,14 @@ func (v *InstancesHandler) Create(c echo.Context) error {
 
 	// check for duplicate name
 	if _, ok := v.instances[req.Name]; ok {
-		return echo.NewHTTPError(http.StatusBadRequest, "Duplicate name")
+		return echo.NewHTTPError(http.StatusBadRequest, "duplicate name")
 	}
 
 	rate, err := time.ParseDuration(c.QueryParam("rate"))
 	if err != nil {
 		rate = 1 * time.Millisecond
 	}
+
 	destination := c.QueryParam("destination")
 	if destination == "" {
 		destination = "mqtt://127.0.0.1:1883"
@@ -81,7 +82,9 @@ func (v *InstancesHandler) Create(c echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
+
 	i.Run()
+
 	v.instances[req.Name] = i
 
 	return c.JSON(http.StatusOK, true)
@@ -91,9 +94,10 @@ func (v *InstancesHandler) Create(c echo.Context) error {
 // to the path GET /instances/{instance_id}
 func (v *InstancesHandler) Show(c echo.Context) error {
 	id := c.Param("instance_id")
+
 	i, ok := v.instances[id]
 	if !ok {
-		return echo.NewHTTPError(http.StatusNotFound, fmt.Sprintf("There is no instnace with name %s", id))
+		return echo.NewHTTPError(http.StatusNotFound, fmt.Sprintf("there is no instnace with name %s", id))
 	}
 
 	return c.JSON(http.StatusOK, i.R.Count())
@@ -103,9 +107,10 @@ func (v *InstancesHandler) Show(c echo.Context) error {
 // This function is mapped to the path DELETE /instances/{instance_id}
 func (v *InstancesHandler) Destroy(c echo.Context) error {
 	id := c.Param("instance_id")
+
 	i, ok := v.instances[id]
 	if !ok {
-		return echo.NewHTTPError(http.StatusNotFound, fmt.Sprintf("There is no instnace with name %s", id))
+		return echo.NewHTTPError(http.StatusNotFound, fmt.Sprintf("there is no instnace with name %s", id))
 	}
 
 	i.Stop()

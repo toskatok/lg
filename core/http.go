@@ -16,7 +16,7 @@ package core
 import (
 	"fmt"
 
-	resty "gopkg.in/resty.v1"
+	"github.com/go-resty/resty/v2"
 )
 
 // HTTPTransport implements transport interface for http/https protocol
@@ -26,8 +26,6 @@ type HTTPTransport struct {
 
 // Init creates a http client
 func (ht *HTTPTransport) Init(url string, token string) error {
-	// TODO use SetAuthToken instead of setting it manually
-	// TODO url must include scheme
 	ht.cli = resty.New().SetHeader("Authorization", token).SetHostURL(fmt.Sprintf("http://%s", url))
 	return nil
 }
