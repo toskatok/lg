@@ -12,6 +12,9 @@ import (
 	"github.com/toskatok/lg/actions"
 )
 
+// ShutdownPeriod is a waiting period before forcing shutdown
+const ShutdownPeriod = 5 * time.Second
+
 func main() {
 	fmt.Println("18.20 at Sep 07 2016 7:20 IR721")
 
@@ -29,7 +32,7 @@ func main() {
 
 	fmt.Println("18.20 As always ... left me alone")
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), ShutdownPeriod)
 	defer cancel()
 
 	if err := e.Shutdown(ctx); err != nil {

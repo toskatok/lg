@@ -23,6 +23,9 @@ import (
 	"github.com/toskatok/lg/models"
 )
 
+const value100 = 6000
+const value101 = 6500
+
 func (suite *LGTestSuite) Test_InstancesResource_Create() {
 	var t bool
 
@@ -32,8 +35,8 @@ func (suite *LGTestSuite) Test_InstancesResource_Create() {
 	config.Token = "ttnIStheBEST"
 	config.Messages = []map[string]interface{}{
 		{
-			"101": 6000,
-			"100": 6500,
+			"101": value100,
+			"100": value101,
 		},
 	}
 
@@ -52,7 +55,7 @@ func (suite *LGTestSuite) Test_InstancesResource_Create() {
 	creq.URL.RawQuery = q.Encode()
 	suite.engine.ServeHTTP(cw, creq)
 
-	suite.Equal(200, cw.Code)
+	suite.Equal(http.StatusOK, cw.Code)
 	suite.NoError(json.Unmarshal(cw.Body.Bytes(), &t))
 	suite.Equal(t, true)
 
@@ -61,7 +64,7 @@ func (suite *LGTestSuite) Test_InstancesResource_Create() {
 	suite.NoError(err)
 	suite.engine.ServeHTTP(dw, dreq)
 
-	suite.Equal(200, dw.Code)
+	suite.Equal(http.StatusOK, dw.Code)
 	suite.NoError(json.Unmarshal(dw.Body.Bytes(), &t))
 	suite.Equal(t, true)
 }

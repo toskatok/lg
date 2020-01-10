@@ -22,6 +22,9 @@ import (
 	"github.com/toskatok/lg/models"
 )
 
+// DefaultRate is default value for rate if there isn't set on the request
+const DefaultRate = 1 * time.Millisecond
+
 // instance creation request
 type instanceReq struct {
 	Name string
@@ -69,7 +72,7 @@ func (v *InstancesHandler) Create(c echo.Context) error {
 
 	rate, err := time.ParseDuration(c.QueryParam("rate"))
 	if err != nil {
-		rate = 1 * time.Millisecond
+		rate = DefaultRate
 	}
 
 	destination := c.QueryParam("destination")

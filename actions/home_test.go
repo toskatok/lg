@@ -11,6 +11,6 @@ func (suite *LGTestSuite) Test_AboutHandler() {
 	suite.NoError(err)
 	suite.engine.ServeHTTP(w, req)
 
-	suite.Equal(200, w.Code)
+	suite.Equal(http.StatusOK, w.Code)
 	suite.Contains(w.Body.String(), "18.20 is leaving us")
 }

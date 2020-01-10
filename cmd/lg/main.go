@@ -44,6 +44,9 @@ func config() models.Config {
 	return config
 }
 
+// ReportDuration is a duration to print results
+const ReportDuration = 1 * time.Second
+
 // action runs a test instance
 func action(c *cli.Context) error {
 	// cfg variable contains current user configuration
@@ -64,9 +67,7 @@ func action(c *cli.Context) error {
 
 	// prints report in 1 second intervals
 	go func() {
-		for {
-			time.Sleep(1 * time.Second)
-
+		for range time.Tick(ReportDuration) {
 			fmt.Print(color.CyanString("%s", cfg.Generator.Name))
 			fmt.Print(color.GreenString(" -> generates"))
 			fmt.Print(color.CyanString(" %d ", i.R.Count()))
@@ -102,9 +103,9 @@ func main() {
 				Usage: "scheme://(host or host:port)",
 			},
 			&cli.DurationFlag{
-				Name:  "rate",
-				Value: 1 * time.Millisecond,
-				Usage: "Send interval",
+				Name:     "rate",
+				Usage:    "Send interval",
+				Required: true,
 			},
 		},
 		Action: action,
