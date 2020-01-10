@@ -1,7 +1,9 @@
 generator:
   name: json
   info:
-    name: ride
-token: -
+    name: events
+token: 'charlie'
 messages:
-  - count: "{{.Count}}"
+  - "timestamp": "2016-11-01T20:44:39Z"
+    "type": "Foul"
+    "team": 0
