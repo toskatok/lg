@@ -17,6 +17,12 @@ import (
 	"fmt"
 
 	"github.com/mitchellh/mapstructure"
+	"github.com/toskatok/lg/generators/atrovan"
+	"github.com/toskatok/lg/generators/fanco"
+	"github.com/toskatok/lg/generators/isrc"
+	"github.com/toskatok/lg/generators/json"
+	"github.com/toskatok/lg/generators/lora"
+	"github.com/toskatok/lg/generators/ttn"
 )
 
 // Generator generates data whenever you want
@@ -30,48 +36,48 @@ type Generator interface {
 func Get(name string, config interface{}) (Generator, error) {
 	// Generator selection and configuration
 	switch name {
-	case "isrc": // generators/isrc.go
-		var isrc ISRCGenerator
+	case "isrc": // generators/isrc/isrc.go
+		var isrc isrc.Generator
 		// load genrator information from configuration file
 		if err := mapstructure.Decode(config, &isrc); err != nil {
 			return nil, err
 		}
 
 		return isrc, nil
-	case "atrovan": // generators/atrovan.go
-		var atrovan AtrovanGenerator
+	case "atrovan": // generators/atrovan/atrovan.go
+		var atrovan atrovan.Generator
 		// load genrator information from configuration file
 		if err := mapstructure.Decode(config, &atrovan); err != nil {
 			return nil, err
 		}
 
 		return atrovan, nil
-	case "fanco": // generators/fanco.go
-		var fanco FancoGenerator
+	case "fanco": // generators/fanco/fanco.go
+		var fanco fanco.Generator
 		// load genrator information from configuration file
 		if err := mapstructure.Decode(config, &fanco); err != nil {
 			return nil, err
 		}
 
 		return fanco, nil
-	case "ttn": // generators/ttn.go
-		var ttn TTNGenerator
+	case "ttn": // generators/ttn/ttn.go
+		var ttn ttn.Generator
 		// load genrator information from configuration file
 		if err := mapstructure.Decode(config, &ttn); err != nil {
 			return nil, err
 		}
 
 		return ttn, nil
-	case "lora": // generators/lora.go
-		var lora LoRaGenerator
+	case "lora": // generators/lora/lora.go
+		var lora lora.Generator
 		// load genrator information from configuration file
 		if err := mapstructure.Decode(config, &lora); err != nil {
 			return nil, err
 		}
 
 		return lora, nil
-	case "json": // generators/json.go
-		var json JSONGenerator
+	case "json": // generators/json/json.go
+		var json json.Generator
 		// load genrator information from configuration file
 		if err := mapstructure.Decode(config, &json); err != nil {
 			return nil, err

@@ -1,21 +1,21 @@
-package generators
+package json
 
 import (
 	"encoding/json"
 )
 
-// JSONGenerator generates data with json format
-type JSONGenerator struct {
+// Generator generates data with json format
+type Generator struct {
 	Name string `mapstructure:"name"`
 }
 
 // Topic returns given name as topic
-func (g JSONGenerator) Topic() string {
+func (g Generator) Topic() string {
 	return g.Name
 }
 
 // Generate generates data message json
-func (g JSONGenerator) Generate(input interface{}) ([]byte, error) {
+func (g Generator) Generate(input interface{}) ([]byte, error) {
 	b, err := json.Marshal(input)
 	if err != nil {
 		return nil, err

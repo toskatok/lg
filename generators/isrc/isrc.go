@@ -11,7 +11,7 @@
  * +===============================================
  */
 
-package generators
+package isrc
 
 import (
 	"bytes"
@@ -21,6 +21,17 @@ import (
 	"time"
 
 	"github.com/2tvenom/cbor"
+)
+
+const (
+	// FPort distinguishes the data format
+	FPort = 5
+	// FCnt counts number of frames
+	FCnt = 10
+	// Frequency of communication (Gateway)
+	Frequency = 868100000
+	// LoRaSNR indicates Signal to noise ratio (Gateway)
+	LoRaSNR = 10
 )
 
 // RxMessage contains payloads received from your nodes in loraserver.io
@@ -54,11 +65,11 @@ type TxInfo struct {
 	CodeRate  string
 }
 
-// ISRCGenerator generates data based on
+// Generator generates data based on
 // RxMessage structure as is described above and then encode it
 // with [cbor](http://cbor.io/).
 // for historical reasons for refer to it as ISRC protocol
-type ISRCGenerator struct {
+type Generator struct {
 	ApplicationID   int    `mapstructure:"applicationID"`
 	ApplicationName string `mapstructure:"applicationName"`
 	DeviceName      string `mapstructure:"deviceName"`
@@ -67,13 +78,13 @@ type ISRCGenerator struct {
 }
 
 // Topic returns lora mqtt topic
-func (g ISRCGenerator) Topic() string {
+func (g Generator) Topic() string {
 	return fmt.Sprintf("application/%d/device/%s/rx", g.ApplicationID, g.DevEUI)
 }
 
 // Generate generates lora message by converting input into cbor and generator
 // parameters.
-func (g ISRCGenerator) Generate(input interface{}) ([]byte, error) {
+func (g Generator) Generate(input interface{}) ([]byte, error) {
 	// input into cbor
 	var buffer bytes.Buffer
 
@@ -88,19 +99,19 @@ func (g ISRCGenerator) Generate(input interface{}) ([]byte, error) {
 		ApplicationName: g.ApplicationName,
 		DeviceName:      g.DeviceName,
 		DevEUI:          g.DevEUI,
-		FPort:           5,
-		FCnt:            10,
+		FPort:           FPort,
+		FCnt:            FCnt,
 		RxInfo: []RxInfo{
 			{
 				Mac:     g.GatewayMac,
 				Name:    fmt.Sprintf("gateway-%s", g.GatewayMac),
 				Time:    time.Now(),
 				RSSI:    -57,
-				LoRaSNR: 10,
+				LoRaSNR: LoRaSNR,
 			},
 		},
 		TxInfo: TxInfo{
-			Frequency: 868100000,
+			Frequency: Frequency,
 			Adr:       true,
 			CodeRate:  "4/6",
 		},

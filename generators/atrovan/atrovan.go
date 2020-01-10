@@ -8,27 +8,27 @@
  * +===============================================
  */
 
-package generators
+package atrovan
 
 import (
 	"encoding/json"
 	"fmt"
 )
 
-// AtrovanGenerator generates data based on
+// Generator generates data based on
 // atrovan protocol
 // and atrovan model.
-type AtrovanGenerator struct {
+type Generator struct {
 }
 
 // Topic returns atrovan mqtt topic
-func (g AtrovanGenerator) Topic() string {
+func (g Generator) Topic() string {
 	return "v1/devices/me/telemetry"
 }
 
 // Generate generates atrovan message by converting input into telemetries json
 // and using generator parameters.
-func (g AtrovanGenerator) Generate(input interface{}) ([]byte, error) {
+func (g Generator) Generate(input interface{}) ([]byte, error) {
 	// input into json
 	states, ok := input.(map[string]interface{})
 	if !ok {

@@ -11,7 +11,7 @@
  * +===============================================
  */
 
-package generators
+package ttn
 
 import (
 	"bytes"
@@ -22,17 +22,17 @@ import (
 	"github.com/2tvenom/cbor"
 )
 
-// TTNGenerator generates data based on TheThingsNetwork format
+// Generator generates data based on TheThingsNetwork format
 // for I1820 ttn integration mdoule.
-type TTNGenerator struct {
+type Generator struct {
 	ApplicationName string `mapstructure:"applicationName"`
 	ApplicationID   string `mapstructure:"applicationID"`
 	DevEUI          string `mapstructure:"devEUI"`
 	DeviceName      string `mapstructure:"deviceName"`
 }
 
-// TTNRequest is a request structure of TTN integration module
-type TTNRequest struct {
+// Request is a request structure of TTN integration module
+type Request struct {
 	AppID          string `json:"app_id"`
 	DevID          string `json:"dev_id"`
 	HardwareSerial string `json:"hardware_serial"`
@@ -55,13 +55,13 @@ type TTNRequest struct {
 }
 
 // Topic returns ttn integration http topic
-func (g TTNGenerator) Topic() string {
+func (g Generator) Topic() string {
 	return fmt.Sprintf("ttn/%s", g.ApplicationID)
 }
 
 // Generate generates lora message by converting input into cbor and generator
 // parameters into ttn message format.
-func (g TTNGenerator) Generate(input interface{}) ([]byte, error) {
+func (g Generator) Generate(input interface{}) ([]byte, error) {
 	// input to cbor conversion
 	var buffer bytes.Buffer
 
@@ -71,7 +71,7 @@ func (g TTNGenerator) Generate(input interface{}) ([]byte, error) {
 	}
 
 	// ttn integration message + time
-	request := TTNRequest{
+	request := Request{
 		AppID:          g.ApplicationName,
 		DevID:          g.DeviceName,
 		HardwareSerial: g.DevEUI,

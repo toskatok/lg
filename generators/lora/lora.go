@@ -11,7 +11,7 @@
  * +===============================================
  */
 
-package generators
+package lora
 
 import (
 	"bytes"
@@ -23,9 +23,36 @@ import (
 	"github.com/brocaar/lorawan"
 )
 
-// LoRaGenerator generates data based on LoRaWAN protocol. It encrypts data and you will need
+const (
+	// FPort distinguishes the data format
+	FPort uint8 = 5
+	// FCnt counts number of frames
+	FCnt = 10
+	// Battery level of device
+	Battery = 115
+	// Margin is a link margin of device
+	Margin = 7
+	// Channel for communication (Gateway)
+	Channel = 1
+	// CRCStatus of packet (Gateway)
+	CRCStatus = 1
+	// Bandwidth of communication (Gateway)
+	Bandwidth = 125
+	// SpreadFactor of communication (Gateway)
+	SpreadFactor = 7
+	// Frequency of communication (Gateway)
+	Frequency = 868300000
+	// LoRaSNR indicates Signal to noise ratio (Gateway)
+	LoRaSNR = 7
+	// RFChain of communication (Gateway)
+	RFChain = 1
+	// Size of packet (Gateway)
+	Size = 23
+)
+
+// Generator generates data based on LoRaWAN protocol. It encrypts data and you will need
 // a lora server to decode it.
-type LoRaGenerator struct {
+type Generator struct {
 	Gateway struct {
 		Mac string `mapstructure:"MAC"`
 	} `mapstructure:"gateway"`
@@ -69,13 +96,13 @@ type RxPacket struct {
 }
 
 // Topic returns lora gateway mqtt topic.
-func (g LoRaGenerator) Topic() string {
+func (g Generator) Topic() string {
 	return fmt.Sprintf("gateway/%s/rx", g.Gateway.Mac)
 }
 
 // Generate generates lora message by converting input into cbor and encrypts it.
 // nolint: funlen
-func (g LoRaGenerator) Generate(input interface{}) ([]byte, error) {
+func (g Generator) Generate(input interface{}) ([]byte, error) {
 	// encodes input with cbor
 	var buffer bytes.Buffer
 
@@ -114,7 +141,7 @@ func (g LoRaGenerator) Generate(input interface{}) ([]byte, error) {
 	copy(devAddr[:], devAddrSlice)
 
 	// https://godoc.org/github.com/brocaar/lorawan#example-PHYPayload--Lorawan10Encode
-	fport := uint8(5)
+	fport := FPort
 
 	phy := lorawan.PHYPayload{
 		MHDR: lorawan.MHDR{
@@ -129,13 +156,13 @@ func (g LoRaGenerator) Generate(input interface{}) ([]byte, error) {
 					ADRACKReq: false,
 					ACK:       false,
 				},
-				FCnt: 10,
+				FCnt: FCnt,
 				FOpts: []lorawan.Payload{
 					&lorawan.MACCommand{
 						CID: lorawan.DevStatusAns,
 						Payload: &lorawan.DevStatusAnsPayload{
-							Battery: 115,
-							Margin:  7,
+							Battery: Battery,
+							Margin:  Margin,
 						},
 					},
 				},
@@ -162,20 +189,20 @@ func (g LoRaGenerator) Generate(input interface{}) ([]byte, error) {
 		RxInfo: RxRawInfo{
 			Board:     0,
 			Antenna:   0,
-			Channel:   1,
+			Channel:   Channel,
 			CodeRate:  "4/5",
-			CrcStatus: 1,
+			CrcStatus: CRCStatus,
 			DataRate: DataRate{
-				Bandwidth:    125,
+				Bandwidth:    Bandwidth,
 				Modulation:   "LORA",
-				SpreadFactor: 7,
+				SpreadFactor: SpreadFactor,
 			},
-			Frequency: 868300000,
-			LoRaSNR:   7,
+			Frequency: Frequency,
+			LoRaSNR:   LoRaSNR,
 			Mac:       g.Gateway.Mac,
-			RfChain:   1,
+			RfChain:   RFChain,
 			Rssi:      -57,
-			Size:      23,
+			Size:      Size,
 		},
 		PhyPayload: phyBytes,
 	})

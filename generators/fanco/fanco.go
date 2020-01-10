@@ -11,7 +11,7 @@
  * +===============================================
  */
 
-package generators
+package fanco
 
 import (
 	"encoding/json"
@@ -19,21 +19,21 @@ import (
 	"time"
 )
 
-// FancoGenerator generates data with allthingstalk format and
+// Generator generates data with allthingstalk format and
 // sends them with pure json.
-type FancoGenerator struct {
+type Generator struct {
 	ThingID string `mapstructure:"thingID"`
 }
 
 // Topic returns I1820 thing state topic.
 // this topic sets thing state (with all of its assets) in I1820
-func (g FancoGenerator) Topic() string {
+func (g Generator) Topic() string {
 	return fmt.Sprintf("things/%s/state", g.ThingID)
 }
 
 // Generate generates data message (in thing state format with all of its assets)
 // in pure json.
-func (g FancoGenerator) Generate(input interface{}) ([]byte, error) {
+func (g Generator) Generate(input interface{}) ([]byte, error) {
 	// convert given input into json
 	values, ok := input.(map[string]interface{})
 	if !ok {
