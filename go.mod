@@ -2,10 +2,10 @@ module github.com/toskatok/lg
 
 require (
 	github.com/2tvenom/cbor v0.0.0-20171016170723-384e799bd841
-	github.com/BurntSushi/toml v0.3.1 // indirect
 	github.com/DataDog/zstd v1.4.1 // indirect
 	github.com/Shopify/sarama v1.24.0
 	github.com/brocaar/lorawan v0.0.0-20190925120821-154a30dbdce2
+	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
 	github.com/eapache/go-resiliency v1.2.0 // indirect
 	github.com/fatih/color v1.7.0
 	github.com/go-playground/locales v0.13.0 // indirect
@@ -24,7 +24,7 @@ require (
 	github.com/satori/go.uuid v1.2.0
 	github.com/spf13/viper v1.3.1
 	github.com/stretchr/testify v1.4.0
-	github.com/urfave/cli v1.20.0
+	github.com/urfave/cli v1.22.2
 	github.com/valyala/fasttemplate v1.1.0 // indirect
 	github.com/yosssi/gmq v0.0.0-20180413011304-b221999646da
 	golang.org/x/crypto v0.0.0-20191011191535-87dc89f01550 // indirect
