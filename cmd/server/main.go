@@ -8,15 +8,19 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/labstack/echo/v4"
 	"github.com/spf13/cobra"
-	"github.com/toskatok/lg/actions"
+	"github.com/toskatok/lg/handler"
 )
 
 // ShutdownPeriod is a waiting period before forcing shutdown
 const ShutdownPeriod = 5 * time.Second
 
 func main() {
-	e := actions.App()
+	e := echo.New()
+
+	api := e.Group("api")
+	handler.NewInstance().Register(api)
 
 	go func() {
 		if err := e.Start(":8080"); err != http.ErrServerClosed {
