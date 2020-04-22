@@ -23,7 +23,7 @@ func main() {
 	handler.NewInstance().Register(api)
 
 	go func() {
-		if err := e.Start(":8080"); err != http.ErrServerClosed {
+		if err := e.Start(":1378"); err != http.ErrServerClosed {
 			log.Fatalf("API Service failed with %s", err)
 		}
 	}()
