@@ -1,0 +1,8 @@
+generator:
+  name: json
+  info:
+    name: /api/sms
+token: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJFbWFpbCI6InBhcmhhbS5hbHZhbmlAZ21haWwuY29tIiwiT3JnIjoic2hhcmVkIiwiSXNzIjoidGhlIGFuY2llbnQgZ3JlZWsgZ29kIG9mIGRyZWFtcyIsIkp0aSI6IjE1NzY2Njk4MjIiLCJJYXQiOjE1NzY2Njk4MjIsIkV4cCI6MTU3OTI2MTgyMn0.OrrF_a-2uGKmw-_jOSa-4UXhh7hNYn1zPOdV0TPRkww'
+messages:
+  - "payload": "1"
+    "recipient": "09124493153"

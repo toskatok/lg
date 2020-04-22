@@ -11,7 +11,7 @@
  * +===============================================
  */
 
-package main
+package run
 
 import (
 	"fmt"
@@ -21,14 +21,19 @@ import (
 	"time"
 
 	"github.com/fatih/color"
+	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"github.com/toskatok/lg/models"
-	"github.com/urfave/cli"
+	"github.com/toskatok/lg/instance"
+)
+
+const (
+	flagDestination = "destination"
+	flagRate        = "rate"
 )
 
 // config loads configuration from file and return it
-func config() models.Config {
-	var config models.Config
+func config() instance.Config {
+	var config instance.Config
 
 	viper.SetConfigName("config") // name of config file (without extension)
 	viper.AddConfigPath(".")      // looking for config in the working directory
@@ -48,18 +53,18 @@ func config() models.Config {
 const ReportDuration = 1 * time.Second
 
 // action runs a test instance
-func action(c *cli.Context) error {
+func main(rate time.Duration, destination string) error {
 	// cfg variable contains current user configuration
 	cfg := config()
 
-	i, err := models.NewInstance(cfg, c.Duration("rate"), c.String("destination"))
+	i, err := instance.New(cfg, rate, destination)
 	if err != nil {
 		return err
 	}
 
 	// prints generator information
 	color.Blue(">>> Generator")
-	color.Yellow("%+v\n", i.G)
+	color.Yellow("%+v\n", i.R.Generator)
 	color.Blue(">>>")
 
 	// runs the instance
@@ -86,31 +91,25 @@ func action(c *cli.Context) error {
 	return nil
 }
 
-func main() {
-	app := &cli.App{
-		Name:        "LG",
-		Description: "Load Generator",
-		Authors: []cli.Author{
-			{
-				Name:  "Parham Alvani",
-				Email: "parham.alvani@gmail.com",
-			},
+func Register(root *cobra.Command) {
+	cmd := &cobra.Command{
+		Use: "run",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			destination, err := cmd.Flags().GetString("destination")
+			if err != nil {
+				return err
+			}
+			rate, err := cmd.Flags().GetDuration("rate")
+			if err != nil {
+				return err
+			}
+
+			return main(rate, destination)
 		},
-		Flags: []cli.Flag{
-			&cli.StringFlag{
-				Name:  "destination",
-				Value: "mqtt://127.0.0.1:1883",
-				Usage: "scheme://(host or host:port)",
-			},
-			&cli.DurationFlag{
-				Name:     "rate",
-				Usage:    "Send interval",
-				Required: true,
-			},
-		},
-		Action: action,
 	}
-	if err := app.Run(os.Args); err != nil {
-		log.Fatal(err)
-	}
+
+	cmd.Flags().String(flagDestination, "mqtt://127.0.0.1:1883", "scheme://(host or host:port)")
+	cmd.Flags().Duration(flagRate, time.Second, "send interval")
+
+	root.AddCommand(cmd)
 }
