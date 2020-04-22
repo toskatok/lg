@@ -11,18 +11,18 @@
  * +===============================================
  */
 
-package generators
+package generator
 
 import (
 	"fmt"
 
 	"github.com/mitchellh/mapstructure"
-	"github.com/toskatok/lg/generators/atrovan"
-	"github.com/toskatok/lg/generators/fanco"
-	"github.com/toskatok/lg/generators/isrc"
-	"github.com/toskatok/lg/generators/json"
-	"github.com/toskatok/lg/generators/lora"
-	"github.com/toskatok/lg/generators/ttn"
+	"github.com/toskatok/lg/generator/atrovan"
+	"github.com/toskatok/lg/generator/fanco"
+	"github.com/toskatok/lg/generator/isrc"
+	"github.com/toskatok/lg/generator/json"
+	"github.com/toskatok/lg/generator/lora"
+	"github.com/toskatok/lg/generator/ttn"
 )
 
 // Generator generates data whenever you want
