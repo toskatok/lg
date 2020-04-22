@@ -11,7 +11,7 @@
  * +===============================================
  */
 
-package handler
+package handler_test
 
 import (
 	"bytes"
@@ -23,7 +23,9 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/suite"
+	"github.com/toskatok/lg/handler"
 	"github.com/toskatok/lg/instance"
+	"github.com/toskatok/lg/request"
 )
 
 // LGTestSuite is a test suite for lg APIs.
@@ -35,6 +37,7 @@ type LGTestSuite struct {
 // SetupSuite initiates lg test suite
 func (suite *LGTestSuite) SetupSuite() {
 	suite.engine = echo.New()
+	handler.NewInstance().Register(suite.engine.Group("/api"))
 }
 
 // Let's test lg APIs!
@@ -63,7 +66,7 @@ func (suite *LGTestSuite) Test_InstancesResource_Create() {
 	}
 
 	cw := httptest.NewRecorder()
-	data, err := json.Marshal(instanceReq{
+	data, err := json.Marshal(request.Instance{
 		Name:   name,
 		Config: config,
 	})

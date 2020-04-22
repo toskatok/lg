@@ -20,6 +20,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/toskatok/lg/instance"
+	"github.com/toskatok/lg/request"
 )
 
 // DefaultRate is default value for rate if there isn't set on the request
@@ -47,13 +48,13 @@ func (v *Instance) List(c echo.Context) error {
 // Create runs new generator instance. This function is mapped
 // to the path POST /instances
 func (v *Instance) Create(c echo.Context) error {
-	var req instanceReq
+	var req request.Instance
 
 	if err := c.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	if err := c.Validate(req); err != nil {
+	if err := req.Validate(); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
