@@ -28,7 +28,7 @@ import (
 // a generator that generates messages.
 // R and R.Generator are public and consumers can use their public methods in their advanced use cases.
 type Instance struct {
-	R runner.Runner
+	R *runner.Runner
 
 	// message is used for populating the data templates.
 	message struct {

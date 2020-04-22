@@ -58,13 +58,13 @@ type Runner struct {
 }
 
 // New creates new runner
-func New(config Config) (Runner, error) {
+func New(config Config) (*Runner, error) {
 	// Find and configure the transport
 	var t Transport
 
 	url, err := url.Parse(config.URL)
 	if err != nil {
-		return Runner{}, err
+		return nil, err
 	}
 
 	switch url.Scheme {
@@ -77,14 +77,14 @@ func New(config Config) (Runner, error) {
 	case "nats":
 		t = &transport.NATS{}
 	default:
-		return Runner{}, fmt.Errorf("scheme %s is not supported yet", url.Scheme)
+		return nil, fmt.Errorf("scheme %s is not supported yet", url.Scheme)
 	}
 
 	if err := t.Init(url.Host, config.Token); err != nil {
-		return Runner{}, err
+		return nil, err
 	}
 
-	return Runner{
+	return &Runner{
 		Generator: config.Generator,
 		Duration:  config.Duration,
 		counter:   0,
