@@ -15,47 +15,38 @@ package run
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"os/signal"
 	"time"
 
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 	"github.com/toskatok/lg/instance"
+	"gopkg.in/yaml.v2"
 )
 
 const (
 	flagDestination = "destination"
 	flagRate        = "rate"
+	flagConfig      = "config"
 )
-
-// config loads configuration from file and return it
-func config() instance.Config {
-	var config instance.Config
-
-	viper.SetConfigName("config") // name of config file (without extension)
-	viper.AddConfigPath(".")      // looking for config in the working directory
-
-	if err := viper.ReadInConfig(); err != nil { // find and read the config file
-		log.Fatalf("config file: %s \n", err)
-	}
-
-	if err := viper.Unmarshal(&config); err != nil { // parse configuration into Config structure
-		log.Fatal(err)
-	}
-
-	return config
-}
 
 // ReportDuration is a duration to print results
 const ReportDuration = 1 * time.Second
 
 // action runs a test instance
-func main(rate time.Duration, destination string) error {
+func main(rate time.Duration, destination string, config string) error {
 	// cfg variable contains current user configuration
-	cfg := config()
+	var cfg instance.Config
+
+	f, err := os.Open(config)
+	if err != nil {
+		return err
+	}
+
+	if err := yaml.NewDecoder(f).Decode(&cfg); err != nil {
+		return err
+	}
 
 	i, err := instance.New(cfg, rate, destination)
 	if err != nil {
@@ -95,21 +86,26 @@ func Register(root *cobra.Command) {
 	cmd := &cobra.Command{
 		Use: "run",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			destination, err := cmd.Flags().GetString("destination")
+			destination, err := cmd.Flags().GetString(flagDestination)
 			if err != nil {
 				return err
 			}
-			rate, err := cmd.Flags().GetDuration("rate")
+			rate, err := cmd.Flags().GetDuration(flagRate)
+			if err != nil {
+				return err
+			}
+			config, err := cmd.Flags().GetString(flagConfig)
 			if err != nil {
 				return err
 			}
 
-			return main(rate, destination)
+			return main(rate, destination, config)
 		},
 	}
 
 	cmd.Flags().String(flagDestination, "mqtt://127.0.0.1:1883", "scheme://(host or host:port)")
 	cmd.Flags().Duration(flagRate, time.Second, "send interval")
+	cmd.Flags().String(flagConfig, "config.yml", "load instance configuration")
 
 	root.AddCommand(cmd)
 }
