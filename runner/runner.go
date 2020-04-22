@@ -74,6 +74,8 @@ func New(config Config) (Runner, error) {
 		t = &transport.MQTT{}
 	case "kafka":
 		t = &transport.Kafka{}
+	case "nats":
+		t = &transport.NATS{}
 	default:
 		return Runner{}, fmt.Errorf("scheme %s is not supported yet", url.Scheme)
 	}
